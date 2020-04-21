@@ -63,7 +63,7 @@ if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
   else
     # Get the latest copy of the gamemode
     if [[ ! -d src/addons/zombiesurvival ]]; then
-      git clone git@github.com:JetBoom/zombiesurvival.git src/addons/zombiesurvival
+      git clone https://github.com/JetBoom/zombiesurvival.git src/addons/zombiesurvival
     else
       pushd src/addons/zombiesurvival
       git pull
