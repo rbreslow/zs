@@ -1,0 +1,30 @@
+version: "2.4"
+services:
+  garrysmod:
+    image: zs
+    build:
+      context: ./src
+      dockerfile: Dockerfile
+    volumes:
+      - ./src/cfg/mount.cfg:/var/lib/steam/.steam/SteamApps/common/GarrysModDS/garrysmod/cfg/mount.cfg:ro
+      - ./src/cfg/server.cfg:/var/lib/steam/.steam/SteamApps/common/GarrysModDS/garrysmod/cfg/server.cfg:ro
+      - ./src/maps/zs_abandoned_mall_starbucks_v2.bsp:/var/lib/steam/.steam/SteamApps/common/GarrysModDS/garrysmod/maps/zs_abandoned_mall_starbucks_v2.bsp:ro
+      - ./src/addons/zombiesurvival:/var/lib/steam/.steam/SteamApps/common/GarrysModDS/garrysmod/addons/zombiesurvival:ro
+    command:
+      - -game garrysmod
+      - -maxplayers 16
+      - +gamemode zombiesurvival
+      - +map zs_abandoned_mall_starbucks_v2
+    tty: true
+    ports:
+      - 27015:27015
+      - 27015:27015/udp
+
+  nginx:
+    image: nginx:1.17
+    volumes:
+      - ./nginx/srv:/srv
+      - ./nginx/etc/nginx/nginx.conf:/etc/nginx/nginx.conf
+      - ./nginx/etc/nginx/conf.d/fastdl.conf:/etc/nginx/conf.d/default.conf
+    ports:
+      - 80:80

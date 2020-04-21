@@ -1,0 +1,25 @@
+#!/bin/bash
+
+set -e
+
+if [[ -n "${ZS_DEBUG}" ]]; then
+  set -x
+fi
+
+function usage() {
+  echo -n "Usage: $(basename "$0") [--production]
+Start Source Dedicated Server (srcds).
+"
+}
+
+if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
+  if [[ "${1:-}" == "--help" ]]; then
+    usage
+  elif [[ "${1:-}" == "--production" ]]; then
+    docker-compose up -d
+  else
+    docker-compose \
+      run --rm --service-ports \
+      garrysmod
+  fi
+fi

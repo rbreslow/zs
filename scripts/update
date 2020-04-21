@@ -1,0 +1,86 @@
+#!/bin/bash
+
+if [[ -n "${ZS_DEBUG}" ]]; then
+  set -x
+fi
+
+function usage() {
+  echo -n \
+    "Usage: $(basename "$0")
+Build container images and update FastDL.
+"
+}
+
+function fastdl() {
+  input_dir="${1}"
+  output_dir="${2}"
+  resource_file="${3}"
+
+  declare -a prefixes
+  prefixes=(maps materials models particles resource sound)
+
+  # Wipe existing resource file
+  if [[ $resource_file ]]; then
+    mkdir -p "${resource_file%/*}"
+    >"${resource_file}"
+  fi
+
+  for prefix in "${prefixes[@]}"; do
+    find "${input_dir}" -maxdepth 1 -type d -name "${prefix}" | while read dir; do
+      find "${dir}" -type f ! -name "*.bz2" -a ! -name ".DS_Store" | while read file; do
+        # Subtractr the input dir to get the virtual path of the file
+        # for FastDL
+        resource=${file#${input_dir}/}
+
+        # Append new resource.AddFile statement
+        echo "Processing ${resource}"
+        if [[ $resource_file ]] && [[ ! $resource =~ ^maps/[[:alnum:]]+ ]]; then
+          printf "resource.AddFile(\"%s\")\n" "${resource}" >>"${resource_file}"
+        fi
+
+        # Ensure FastDL directory structure exists
+        mkdir -p "${output_dir}/${resource%/*}"
+
+        # Only recompress resources if SHA512/256 is invalid
+        compressed_resource="${output_dir}/${resource}.bz2"
+        if [[ ! $(shasum -a 512256 -c "${compressed_resource}.sha512256") ]]; then
+          bzip2 -k -c "${file}" >"${compressed_resource}"
+          shasum -a 512256 "${compressed_resource}" >"${compressed_resource}.sha512256"
+
+          # Hack to make SRCDS recognize bz2 files exist on FastDL
+          if [[ $resource =~ ^maps/[[:alnum:]]+ ]]; then
+            cp "${file}" "${output_dir}/${resource}"
+          fi
+        fi
+      done
+    done
+  done
+}
+
+if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
+  if [[ "${1:-}" == "--help" ]]; then
+    usage
+  else
+    # Get the latest copy of the gamemode
+    if [[ ! -d src/addons/zombiesurvival ]]; then
+      git clone git@github.com:JetBoom/zombiesurvival.git src/addons/zombiesurvival
+    else
+      pushd src/addons/zombiesurvival
+      git pull
+      popd
+    fi
+
+    # Make sure container images are up-to-date
+    docker-compose build --pull
+
+    # Compress maps
+    fastdl \
+      ./src \
+      ./nginx/srv
+
+    # Compress gamemode content
+    fastdl \
+      ./src/addons/zombiesurvival/gamemodes/zombiesurvival/content \
+      ./nginx/srv
+  fi
+fi
