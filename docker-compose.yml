@@ -15,6 +15,7 @@ services:
       - -maxplayers 16
       - +gamemode zombiesurvival
       - +map zs_abandoned_mall_starbucks_v2
+    stdin_open: true
     tty: true
     ports:
       - 27015:27015
