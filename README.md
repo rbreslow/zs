@@ -10,7 +10,14 @@ This repository contains a fork of JetBoom's Zombie Survival gamemode, as well a
 
 ## Getting Started
 
-First, we need to accomplish the following tasks:
+First, make sure a [Steam GSLT](https://steamcommunity.com/dev/managegameservers) is present in the `.env` file:
+
+```bash
+$ cat .env
+STEAM_GSLT=YOURLOGINTOKENHERE
+```
+
+Next, we need to accomplish the following tasks:
 
 - Install the latest version of Garry's Mod SRCDS
 - Get the latest version of [JetBoom/zombiesurvival](https://github.com/JetBoom/zombiesurvival)

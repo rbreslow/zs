@@ -1,2 +1,3 @@
-src/zombiesurvival
+src/addons/zombiesurvival
 nginx/srv
+.env
