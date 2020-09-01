@@ -1,0 +1,31 @@
+#!/bin/bash
+
+if [[ -n "${ZS_DEBUG}" ]]; then
+  set -x
+fi
+
+function usage() {
+  echo -n \
+    "Usage: $(basename "$0")
+Push FastDL artifacts to S3.
+"
+}
+
+if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
+  if [[ "${1:-}" == "--help" ]]; then
+    usage
+  else
+    if [[ -n "${ZS_FASTDL_BUCKET}" ]]; then
+      aws \
+        --endpoint-url "${AWS_ENDPOINT_URL}" \
+        s3 sync \
+        --acl public-read \
+        --exclude "*.sha512256" \
+        --size-only \
+        "./build/fastdl" "s3://${ZS_FASTDL_BUCKET}"
+    else
+      echo "ERROR: No ZS_FASTDL_BUCKET variable defined."
+      exit 1
+    fi
+  fi
+fi

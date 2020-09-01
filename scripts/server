@@ -7,17 +7,20 @@ if [[ -n "${ZS_DEBUG}" ]]; then
 fi
 
 function usage() {
-  echo -n "Usage: $(basename "$0") [--stop]
-Start or stop SRCDS.
+  echo -n "Usage: $(basename "$0") [--production]
+Start SRCDS.
 "
 }
 
 if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
   if [[ "${1:-}" == "--help" ]]; then
     usage
-  elif [[ "${1:-}" == "--stop" ]]; then
-    docker-compose stop
+  elif [[ "${1:-}" == "--production" ]]; then
+    docker-compose \
+      -f docker-compose.yml \
+      -f docker-compose.production.yml \
+      up -d garrysmod
   else
-    docker-compose up -d
+    docker-compose up garrysmod
   fi
 fi

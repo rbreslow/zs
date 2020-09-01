@@ -1,3 +1,8 @@
-src/addons/zombiesurvival
-nginx/srv
+# Docker
 .env
+
+# Garry's Mod
+build
+*.bsp
+server.cfg
+sv_resources.lua
