@@ -7,7 +7,7 @@ fi
 function usage() {
   echo -n \
     "Usage: $(basename "$0")
-Build container images and update FastDL.
+Build container images and update dependencies.
 "
 }
 
@@ -33,7 +33,6 @@ function fastdl() {
         resource=${file#${input_dir}/}
 
         # Append new resource.AddFile statement
-        echo "Processing ${resource}"
         if [[ $resource_file ]] && [[ ! $resource =~ ^maps/[[:alnum:]]+ ]]; then
           printf "resource.AddFile(\"%s\")\n" "${resource}" >>"${resource_file}"
         fi
@@ -44,6 +43,8 @@ function fastdl() {
         # Only recompress resources if SHA512/256 is invalid
         compressed_resource="${output_dir}/${resource}.bz2"
         if [[ ! $(shasum -a 512256 -c "${compressed_resource}.sha512256") ]]; then
+          echo "Processing ${resource}"
+
           bzip2 -k -c "${file}" >"${compressed_resource}"
           shasum -a 512256 "${compressed_resource}" >"${compressed_resource}.sha512256"
 
@@ -61,26 +62,21 @@ if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
   if [[ "${1:-}" == "--help" ]]; then
     usage
   else
-    # Get the latest copy of the gamemode
-    if [[ ! -d src/addons/zombiesurvival ]]; then
-      git clone https://github.com/JetBoom/zombiesurvival.git src/addons/zombiesurvival
-    else
-      pushd src/addons/zombiesurvival
-      git pull
-      popd
-    fi
-
     # Make sure container images are up-to-date
     docker-compose build --pull
 
-    # Compress maps
-    fastdl \
-      ./src \
-      ./nginx/srv
+    # Pull map files from from S3
+    docker-compose run --rm --no-deps awscli \
+      ./scripts/sync-maps
 
     # Compress gamemode content
     fastdl \
-      ./src/addons/zombiesurvival/gamemodes/zombiesurvival/content \
-      ./nginx/srv
+      ./src/garrysmod/gamemodes/zombiesurvival/content \
+      ./build/fastdl \
+      ./src/garrysmod/gamemodes/zombiesurvival/gamemode/sv_resources.lua
+
+    # Push FastDL artifacts to S3
+    docker-compose run --rm --no-deps awscli \
+      ./scripts/sync-fastdl
   fi
 fi

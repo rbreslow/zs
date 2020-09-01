@@ -1,0 +1,12 @@
+version: "2.4"
+services:
+  garrysmod:
+    command:
+      - -game garrysmod
+      - -maxplayers 64
+      - +gamemode zombiesurvival
+      - +map zs_bdf_b3
+      - +sv_setsteamaccount ${STEAM_GSLT}
+    ports:
+      - 27015:27015
+      - 27015:27015/udp

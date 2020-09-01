@@ -3,30 +3,29 @@ services:
   garrysmod:
     image: zs
     build:
-      context: ./src
+      context: ./src/garrysmod
       dockerfile: Dockerfile
     volumes:
-      - ./src/cfg/mount.cfg:/var/lib/steam/.steam/SteamApps/common/GarrysModDS/garrysmod/cfg/mount.cfg:ro
-      - ./src/cfg/server.cfg:/var/lib/steam/.steam/SteamApps/common/GarrysModDS/garrysmod/cfg/server.cfg:ro
-      - ./src/maps/zs_abandoned_mall_starbucks_v2.bsp:/var/lib/steam/.steam/SteamApps/common/GarrysModDS/garrysmod/maps/zs_abandoned_mall_starbucks_v2.bsp:ro
-      - ./src/addons/zombiesurvival:/var/lib/steam/.steam/SteamApps/common/GarrysModDS/garrysmod/addons/zombiesurvival:ro
+      - ./src/garrysmod/cfg/server.cfg:/var/lib/steam/.steam/SteamApps/common/GarrysModDS/garrysmod/cfg/server.cfg:ro
+      - ./src/garrysmod/gamemodes/zombiesurvival:/var/lib/steam/.steam/SteamApps/common/GarrysModDS/garrysmod/gamemodes/zombiesurvival:ro
     command:
       - -game garrysmod
       - -maxplayers 16
       - +gamemode zombiesurvival
-      - +map zs_abandoned_mall_starbucks_v2
+      - +map gm_construct
       - +sv_setsteamaccount ${STEAM_GSLT}
     stdin_open: true
     tty: true
-    ports:
-      - 27015:27015
-      - 27015:27015/udp
 
-  nginx:
-    image: nginx:1.17
+  awscli:
+    image: amazon/aws-cli:latest
+    environment:
+      - AWS_ACCESS_KEY_ID
+      - AWS_SECRET_ACCESS_KEY
+      - AWS_ENDPOINT_URL
+      - ZS_FASTDL_BUCKET
+      - ZS_MAPS_BUCKET
     volumes:
-      - ./nginx/srv:/srv
-      - ./nginx/etc/nginx/nginx.conf:/etc/nginx/nginx.conf
-      - ./nginx/etc/nginx/conf.d/fastdl.conf:/etc/nginx/conf.d/default.conf
-    ports:
-      - 80:80
+      - ./:/usr/local/src
+    working_dir: /usr/local/src
+    entrypoint: bash

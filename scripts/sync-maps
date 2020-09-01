@@ -1,0 +1,30 @@
+#!/bin/bash
+
+if [[ -n "${ZS_DEBUG}" ]]; then
+  set -x
+fi
+
+function usage() {
+  echo -n \
+    "Usage: $(basename "$0")
+Pull map files from from S3.
+"
+}
+
+if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
+  if [[ "${1:-}" == "--help" ]]; then
+    usage
+  else
+    if [[ -n "${ZS_MAPS_BUCKET}" ]]; then
+      aws \
+        --endpoint-url "${AWS_ENDPOINT_URL}" \
+        s3 sync \
+        --size-only \
+        --delete \
+        "s3://${ZS_MAPS_BUCKET}" "./src/garrysmod/gamemodes/zombiesurvival/content/maps"
+    else
+      echo "ERROR: No ZS_MAPS_BUCKET variable defined."
+      exit 1
+    fi
+  fi
+fi
