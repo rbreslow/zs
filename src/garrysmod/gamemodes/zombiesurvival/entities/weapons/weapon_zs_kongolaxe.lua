@@ -64,7 +64,7 @@ function SWEP:PlaySwingSound()
 end
 
 function SWEP:PlayHitSound()
-	self:EmitSound("weapons/melee/golf club/golf_hit-0"..math.random(4)..".ogg", 75, math.random(70, 75))
+	self:EmitSound("weapons/melee/golf_club/golf_hit-0"..math.random(4)..".ogg", 75, math.random(70, 75))
 end
 
 function SWEP:PlayHitFleshSound()
