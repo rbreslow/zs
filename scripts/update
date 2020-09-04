@@ -78,5 +78,14 @@ if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
     # Push FastDL artifacts to S3
     docker-compose run --rm --no-deps awscli \
       ./scripts/sync-fastdl
+
+    # Bring up PostgreSQL and Lapis in a way that respects
+    # configured service health checks.
+    docker-compose \
+      -f docker-compose.yml \
+      up -d database lapis
+
+    # Apply any outstanding Lapis migrations
+    ./scripts/manage migrate
   fi
 fi

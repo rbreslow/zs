@@ -1,5 +1,17 @@
 version: "2.4"
 services:
+  database:
+    image: postgres:12.2
+    environment:
+      - POSTGRES_DB=zombiesurvival
+      - POSTGRES_PASSWORD=zombiesurvival
+      - POSTGRES_USER=zombiesurvival
+    healthcheck:
+      test: pg_isready -U zombiesurvival
+      interval: 3s
+      timeout: 3s
+      retries: 3
+
   garrysmod:
     image: zs
     build:
@@ -8,6 +20,9 @@ services:
     volumes:
       - ./src/garrysmod/cfg/server.cfg:/var/lib/steam/.steam/SteamApps/common/GarrysModDS/garrysmod/cfg/server.cfg:ro
       - ./src/garrysmod/gamemodes/zombiesurvival:/var/lib/steam/.steam/SteamApps/common/GarrysModDS/garrysmod/gamemodes/zombiesurvival:ro
+    depends_on:
+      database:
+        condition: service_healthy
     command:
       - -game garrysmod
       - -maxplayers 16
@@ -16,6 +31,25 @@ services:
       - +sv_setsteamaccount ${STEAM_GSLT}
     stdin_open: true
     tty: true
+
+  lapis:
+    image: lapis
+    build:
+      context: ./src/lapis
+      dockerfile: Dockerfile
+    environment:
+      - POSTGRES_HOST=database
+      - POSTGRES_USER=zombiesurvival
+      - POSTGRES_PASSWORD=zombiesurvival
+      - POSTGRES_DB=zombiesurvival
+      - PORT=8080
+    depends_on:
+      database:
+        condition: service_healthy
+    command:
+    - server
+    volumes:
+      - ./src/lapis:/usr/local/src
 
   awscli:
     image: amazon/aws-cli:latest
