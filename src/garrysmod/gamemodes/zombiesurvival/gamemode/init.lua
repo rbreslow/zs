@@ -112,6 +112,7 @@ include("zsbots/init.lua")
 
 include_library("statistics")
 
+include("sv_database.lua")
 include("sv_resources.lua")
 
 local pairs = pairs
@@ -235,6 +236,10 @@ function GM:Initialize()
 	game.ConsoleCommand("fire_dmgscale 1\n")
 	game.ConsoleCommand("mp_flashlight 1\n")
 	game.ConsoleCommand("sv_gravity 600\n")
+
+	self.Database:EstablishConnection(function(database)
+		MsgN(string.format("Connected to PostgreSQL\nProtocol Version: %s, Server Version %s", database.conn:protocol_version(), database.conn:server_version()))
+	end)
 end
 
 function GM:AddNetworkStrings()

@@ -77,6 +77,7 @@ serve as the FastDL endpoint.
 | Name          | Description                                        |
 |---------------|----------------------------------------------------|
 | `console`     | Attach to the SRCDS console. Detach with `ctrl-d`. |
+| `manage`      | Run a Lapis command line tool.                     |
 | `server`      | Start SRCDS.                                       |
 | `sync-fastdl` | Push FastDL artifacts to S3.                       |
 | `sync-maps`   | Pull map files from from S3.                       |

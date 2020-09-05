@@ -1,6 +1,14 @@
 version: "2.4"
 services:
+  database:
+    ports:
+      - 5432:5432
+
   garrysmod:
     ports:
       - 27015:27015
       - 27015:27015/udp
+
+  lapis:
+    ports:
+      - 8080:8080
