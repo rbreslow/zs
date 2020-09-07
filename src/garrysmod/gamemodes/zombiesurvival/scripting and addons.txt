@@ -62,9 +62,6 @@ GM:GiveDefaultOrRandomEquipment(Player pl)
 Hook and function. Gives a player random equipment without checking their favorites.
 GM:GiveRandomEquipment(Player pl)
 
-Hook and function. Loads the next map. HERE IS WHERE YOU PUT YOUR MAP VOTING AND STUFF. RETURN TRUE TO OVERRIDE.
-GM:LoadNextMap()
-
 Hook. Called when a player has told the server that GM:HookGetLocal (client-side hook below) has been called. DO NOT TRUST THE CLIENT ON THIS, SHOULD ONLY BE USED FOR COSMETICS AND SENDING NETWORKED STUFF.
 GM:PlayerReady(Player pl)
 

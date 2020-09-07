@@ -21,6 +21,7 @@ include("cl_scoreboard.lua")
 include("cl_targetid.lua")
 include("cl_postprocess.lua")
 include("cl_voicesets.lua")
+include("cl_mapvote.lua")
 include("cl_net.lua")
 include("skillweb/cl_skillweb.lua")
 
@@ -52,6 +53,9 @@ include("vgui/dspawnmenu.lua")
 include("vgui/zsgamestate.lua")
 include("vgui/zshealtharea.lua")
 include("vgui/zsstatusarea.lua")
+
+include("vgui/grid.lua")
+include("vgui/mapvote.lua")
 
 include("cl_dermaskin.lua")
 include("cl_deathnotice.lua")
@@ -1293,7 +1297,7 @@ end
 local fontfamily = "Ghoulish Fright AOE"
 local fontfamilysm = "Remington Noiseless"
 local fontfamily3d = "hidden"
-local fontsizeadd = 8
+local fontsizeadd = 0
 local fontweight = 0
 
 function GM:Create3DFonts()
@@ -2104,6 +2108,8 @@ function GM:EndRound(winner, nextmap)
 		if not (pEndBoard and pEndBoard:IsValid()) then
 			MakepEndBoard(winner)
 		end
+
+		self.MapVote:Show()
 	end)
 end
 
