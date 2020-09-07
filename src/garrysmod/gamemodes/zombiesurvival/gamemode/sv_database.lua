@@ -11,21 +11,21 @@ GM.Database._Queue = {}
 
 function GM.Database:Connect()
     local host, user, password, port, database = host:GetString(), user:GetString(), password:GetString(), database:GetString()
-
+    
     if pg then
         self.Connection = pg.new_connection()
-
+        
         local success, err = self.Connection:connect(host, user, password, database, 5432)
-
+        
         if success then
             success, err = self.Connection:set_encoding("UTF8")
-
+            
             if not success then
                 ErrorNoHalt("Failed to set connection encoding:\n", err)
             end
-
+            
             MsgN("Connected to the database!")
-
+            
             self._Connected = true
             hook.Run("DatabaseConnected")
         else
@@ -39,7 +39,16 @@ end
 
 function GM.Database:Connected()
     if self._Connected then
-        return pcall(function() self.Connection:is_open() end)
+        local _,is_open = pcall(function() return self.Connection:is_open() end)
+
+        -- If a connection has already been established, we can check the status
+        -- via pqxx::connection::is_open. Otherwise, use pcall to see if the "pg
+        -- - no connection, connect to a database first." error has been thrown.
+        if isbool(is_open) then
+            return is_open
+        else
+            return false
+        end
     else
         return false
     end
@@ -48,7 +57,7 @@ end
 function GM.Database:Escape(str)
     return self.Connection:escape(str)
 end
-  
+
 function GM.Database:Quote(str)
     return self.Connection:quote(str)
 end
@@ -66,19 +75,22 @@ function GM.Database:RawQuery(query, callback)
     if not self:Connected() then
         return self:Queue(query, callback)
     end
-
-    MsgN(string.format("Query: %s", query))
-
+    
     local query_obj = self.Connection:query(query)
     query_obj:set_sync(true)
-
+    
     local success, res, size = query_obj:run()
     if success then
         if isfunction(callback) then return callback(res, size) end
     else
         ErrorNoHalt("PostgreSQL Query Error!\n")
         ErrorNoHalt(string.format("Query: %s\n", query))
-        ErrorNoHalt(string.format("%s\n", tostring(res)))
+        local err = tostring(res)
+        ErrorNoHalt(string.format("%s\n", err))
+
+        if err == "Connection to database failed" then
+            return self:Queue(query, callback)
+        end
     end
 end
 
@@ -87,11 +99,11 @@ function GM.Database:_Think()
         if istable(self._Queue[1]) then
             local queue_obj = self._Queue[1]
             local query_string = queue_obj[1]
-
+            
             if isstring(query_string) then
                 self:RawQuery(query_string, queue_obj[2])
             end
-
+            
             table.remove(self._Queue, 1)
         end
     end
@@ -103,12 +115,12 @@ end)
 
 function GM.Database:_CheckConnection()
     local connected = self:Connected()
-
+    
     if not connected then self:Connect() end
     return connected
 end
 
-timer.Create("GAMEMODE::Database#_CheckConnection", 30, 0, function()
+timer.Create("GAMEMODE::Database#_CheckConnection", 10, 0, function()
     GAMEMODE.Database:_CheckConnection()
 end)
 
