@@ -4,6 +4,17 @@ This repository contains a fork of [JetBoom's Zombie
 Survival](https://github.com/jetboom/zombiesurvival) gamemode for the "Hot Dad"
 Garry's Mod community.
 
+**_Licensing Note:_**
+
+With written permission from JetBoom, this repository is licensed under the JBGM
+License WITH the Sharing Exception.
+
+Our exception requires that, if you use any of our source code, you will make
+the source code of your version accessible to your players.
+
+If you want to use the improvements we _share_ with the community, you will have
+to give back as well.
+
 - [Requirements](#requirements)
 - [Getting Started](#getting-started)
   - [Maps](#maps)
