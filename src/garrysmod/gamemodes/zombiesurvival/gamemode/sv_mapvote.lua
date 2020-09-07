@@ -1,13 +1,11 @@
 GM.MapVote = GM.MapVote or {}
 
-GM.MapVote.cooldown = CreateConVar("zs_map_cooldown", 7200, FCVAR_ARCHIVE, "How long to wait before voting on a map again (in seconds).", 0):GetInt()
+GM.MapVote.Cooldown = CreateConVar("zs_map_cooldown", 7200, FCVAR_ARCHIVE, "How long to wait before voting on a map again (in seconds).", 0):GetInt()
 cvars.AddChangeCallback("zs_map_cooldown", function(_, _, value)
-	GAMEMODE.MapVote.cooldown = tonumber(value) or 7200
+	GAMEMODE.MapVote.Cooldown = tonumber(value) or 7200
 end)
 
-function GM.MapVote:Sync()
-    local conn = GAMEMODE.Database.conn
-
+local function get_file_system_maps()
     local maps = select(1, file.Find("maps/zs_*.bsp", "GAME"))
     maps = table.Add(maps, file.Find("maps/ze_*.bsp", "GAME"))
     maps = table.Add(maps, file.Find("maps/zm_*.bsp", "GAME"))
@@ -17,81 +15,99 @@ function GM.MapVote:Sync()
         maps[i] = maps[i]:sub(0, -5)
     end
 
+    return maps
+end
+
+function GM.MapVote:Sync()
+    local maps = get_file_system_maps()
+
     -- Make sure every map is currently installed on the server is present in
     -- the database
-    local base = [[
-        INSERT INTO maps
-            VALUES
-                %s
-            ON CONFLICT (id)
-                DO UPDATE SET
-                    installed = TRUE;
-    ]]
-
     local values = {}
     for i=1,#maps do
-        table.insert(values, string.format("(%s)", conn:quote(conn:escape(maps[i]))))
+        local map = GAMEMODE.Database:Escape(maps[i])
+        table.insert(values, string.format("('%s')", map))
     end
 
-    local query_obj = conn:query(string.format(base, table.concat(values, ", ")))
-    query_obj:set_sync(true)
-    local success, res, size = query_obj:run()
-    if not success then
-        ErrorNoHalt(res)
-    end
+    local query = string.format(
+        [[
+            INSERT INTO maps
+                VALUES
+                    %s
+                ON CONFLICT (id)
+                    DO UPDATE SET
+                        installed = TRUE;
+        ]],
+        table.concat(values, ", ")
+    )
+    GAMEMODE.Database:Queue(query)
 
     -- If there are any maps present in the database that are *not* present on
     -- the server, let's update their status
-    base = [[
-        UPDATE
-            maps
-        SET
-            installed = FALSE
-        WHERE
-            id NOT IN (%s);
-    ]]
-
     values = {}
     for i=1,#maps do
-        table.insert(values, string.format("%s", conn:quote(conn:escape(maps[i]))))
+        local map = GAMEMODE.Database:Escape(maps[i])
+        table.insert(values, string.format("'%s'", map))
     end
-    query_obj = conn:query(string.format(base, table.concat(values, ", ")))
-    query_obj:set_sync(true)
-    local success, res, size = query_obj:run()
-    if not success then
-        ErrorNoHalt(res)
-    end
+
+    local query = string.format(
+        [[
+            UPDATE
+                maps
+            SET
+                installed = FALSE
+            WHERE
+                id NOT IN (%s);
+        ]],
+        table.concat(values, ", ")
+    )
+    GAMEMODE.Database:Queue(query)
 end
 
 function GM.MapVote:MakePool()
-    local conn = GAMEMODE.Database.conn
-    local base = [[
-        SELECT
-            *
-        FROM
-            maps
-        WHERE
-            installed = TRUE
-            AND id != %s
-            AND last_played < (now() - interval '%d seconds')
-        ORDER BY
-            random()
-        LIMIT 8;
-    ]]
-    local query_obj = conn:query(string.format(base, conn:quote(conn:escape(game.GetMap())), GAMEMODE.MapVote.cooldown))
-    query_obj:set_sync(true)
-    local success, res, size = query_obj:run()
-    if success then
-        local pool = {}
+    local pool = {}
 
-        for i=1,#res do
-            table.insert(pool, res[i].id)
-        end
-
-        return pool
-    else
-        ErrorNoHalt(res)
+    if GAMEMODE.Database:Connected() then
+        local query = string.format(
+            [[
+                SELECT
+                    *
+                FROM
+                    maps
+                WHERE
+                    installed = TRUE
+                    AND id != '%s'
+                    AND last_played < (now() - interval '%d seconds')
+                ORDER BY
+                    random()
+                LIMIT 8;
+            ]], 
+            GAMEMODE.Database:Escape(game.GetMap()), 
+            GAMEMODE.MapVote.Cooldown
+        )
+        GAMEMODE.Database:RawQuery(query, function(res, size)
+            for i=1,#res do
+                table.insert(pool, res[i].id)
+            end
+        end)
     end
+
+    -- Fallback to generating a pool from the file system.
+    if table.IsEmpty(pool) then
+        local maps = get_file_system_maps()
+
+        local i = 1
+        while i <= 8 do
+            local map = table.Random(maps)
+
+            if map ~= game.GetMap() and not table.HasValue(pool, map) then
+                i = i + 1
+                table.insert(pool, map)
+            end
+        end
+    end
+
+    return pool
 end
 
 function GM.MapVote:NetworkToPlayer(player)
@@ -161,26 +177,25 @@ function GM.MapVote:End()
     net.WriteUInt(tally - 1, 3)
     net.Broadcast()
 
-    local tallyStr = self.Pool[tally]
+    local tally_str = self.Pool[tally]
 
-    local conn = GAMEMODE.Database.conn
-    local base = [[
-        UPDATE
-            maps
-        SET
-            last_played = now()
-        WHERE
-            id = %s;
-    ]]
-    local query_obj = conn:query(string.format(base, conn:quote(conn:escape(tallyStr))))
-    query_obj:set_sync(true)
-    local success, res, size = query_obj:run()
-    if not success then
-        ErrorNoHalt(res)
+    if GAMEMODE.Database:Connected() then
+        local query = string.format(
+            [[
+                UPDATE
+                    maps
+                SET
+                    last_played = now()
+                WHERE
+                    id = '%s';
+            ]],
+            GAMEMODE.Database:Escape(tally_str)
+        )
+        GAMEMODE.Database:RawQuery(query)
     end
 
     timer.Simple(5, function()
-        RunConsoleCommand("changelevel", tallyStr)
+        RunConsoleCommand("changelevel", tally_str)
     end)
 end
 

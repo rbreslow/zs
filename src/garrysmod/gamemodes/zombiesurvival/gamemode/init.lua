@@ -243,11 +243,11 @@ function GM:Initialize()
 	game.ConsoleCommand("mp_flashlight 1\n")
 	game.ConsoleCommand("sv_gravity 600\n")
 
-	self.Database:EstablishConnection(function(database)
-		MsgN(string.format("Connected to PostgreSQL\nProtocol Version: %s, Server Version %s", database.conn:protocol_version(), database.conn:server_version()))
+	self.Database:Connect()
+end
 
-		self.MapVote:Sync()
-	end)
+function GM:DatabaseConnected()
+	self.MapVote:Sync()
 end
 
 function GM:AddNetworkStrings()
