@@ -1,5 +1,10 @@
 GM.MapVote = GM.MapVote or {}
 
+GM.MapVote.cooldown = CreateConVar("zs_map_cooldown", 7200, FCVAR_ARCHIVE, "How long to wait before voting on a map again (in seconds).", 0):GetInt()
+cvars.AddChangeCallback("zs_map_cooldown", function(_, _, value)
+	GAMEMODE.MapVote.cooldown = tonumber(value) or 7200
+end)
+
 function GM.MapVote:Sync()
     local conn = GAMEMODE.Database.conn
 
@@ -68,12 +73,12 @@ function GM.MapVote:MakePool()
         WHERE
             installed = TRUE
             AND id != %s
-            AND last_played < (now() - interval '4 hours')
+            AND last_played < (now() - interval '%d seconds')
         ORDER BY
             random()
         LIMIT 8;
     ]]
-    local query_obj = conn:query(string.format(base, conn:quote(conn:escape(game.GetMap()))))
+    local query_obj = conn:query(string.format(base, conn:quote(conn:escape(game.GetMap())), GAMEMODE.MapVote.cooldown))
     query_obj:set_sync(true)
     local success, res, size = query_obj:run()
     if success then
