@@ -7,8 +7,6 @@ AccessorFunc(PANEL, "rowHeight", "RowHeight", FORCE_NUMBER)
 function PANEL:Init()
     self.cells = {}
 
-    self:SetPaintBackground(false)
-
     self:Dock(TOP)
 end
 
@@ -54,16 +52,12 @@ function PANEL:CalculateHeight()
 end
 
 function PANEL:PerformLayout()
-    for _,v in ipairs(self.cells) do
-       v:InvalidateChildren(true)
-    end
-
     self:SetTall(self:CalculateHeight())
 end
 
 PANEL.AllowAutoRefresh = true
 
-derma.DefineControl("ZSRow", "", PANEL, "DPanel")
+derma.DefineControl("ZSRow", "", PANEL, "Panel")
 
 local PANEL = {}
 
@@ -75,10 +69,6 @@ AccessorFunc(PANEL, "rowHeight", "RowHeight", FORCE_NUMBER)
 function PANEL:Init()
     self.rows = {}
     self.cells = {}
-
-    self:SetPaintBackground(false)
-
-    self.backgroundColor = table.Random({Color(255, 0, 0), Color(0, 255, 0)})
 
     self:Dock(TOP)
 end
@@ -141,4 +131,4 @@ end
 
 PANEL.AllowAutoRefresh = true
 
-derma.DefineControl("ZSGrid", "", PANEL, "DPanel")
+derma.DefineControl("ZSGrid", "", PANEL, "Panel")
