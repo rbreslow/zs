@@ -28,6 +28,7 @@ AddCSLuaFile("sh_weaponquality.lua")
 AddCSLuaFile("vault/shared.lua")
 
 AddCSLuaFile("cl_draw.lua")
+AddCSLuaFile("cl_mapvote.lua")
 AddCSLuaFile("cl_net.lua")
 AddCSLuaFile("cl_util.lua")
 AddCSLuaFile("cl_options.lua")
@@ -82,6 +83,9 @@ AddCSLuaFile("vgui/zshealtharea.lua")
 AddCSLuaFile("vgui/zsstatusarea.lua")
 AddCSLuaFile("vgui/zsgamestate.lua")
 
+AddCSLuaFile("vgui/grid.lua")
+AddCSLuaFile("vgui/mapvote.lua")
+
 include("sh_globals.lua")
 
 include("obj_entity_extend_sv.lua")
@@ -113,6 +117,8 @@ include("zsbots/init.lua")
 include_library("statistics")
 
 include("sv_database.lua")
+include("sv_mapvote.lua")
+
 include("sv_resources.lua")
 
 local pairs = pairs
@@ -237,9 +243,11 @@ function GM:Initialize()
 	game.ConsoleCommand("mp_flashlight 1\n")
 	game.ConsoleCommand("sv_gravity 600\n")
 
-	self.Database:EstablishConnection(function(database)
-		MsgN(string.format("Connected to PostgreSQL\nProtocol Version: %s, Server Version %s", database.conn:protocol_version(), database.conn:server_version()))
-	end)
+	self.Database:Connect()
+end
+
+function GM:DatabaseConnected()
+	self.MapVote:Sync()
 end
 
 function GM:AddNetworkStrings()
@@ -338,6 +346,10 @@ function GM:AddNetworkStrings()
 	util.AddNetworkString("voice_zombiedeath")
 	util.AddNetworkString("voice_pain")
 	util.AddNetworkString("voice_zombiepain")
+
+	util.AddNetworkString("zs_mapvote_start")
+	util.AddNetworkString("zs_mapvote_winner")
+	util.AddNetworkString("zs_mapvote_vote")
 end
 
 function GM:IsClassicMode()
@@ -485,8 +497,6 @@ function GM:InitPostEntity()
 	self:FixWeaponBase()
 
 	gamemode.Call("InitPostEntityMap")
-
-	RunConsoleCommand("mapcyclefile", "mapcycle_zombiesurvival.txt")
 
 	if string.find(string.lower(GetConVar("hostname"):GetString()), "hellsgamers", 1, true) then
 		self.Think = function() end
@@ -1405,47 +1415,6 @@ function GM:PostEndRound(winner)
 	self:SaveAllVaults()
 end
 
--- You can override or hook and return false in case you have your own map change system.
-local function RealMap(map)
-	return string.match(map, "(.+)%.bsp")
-end
-function GM:LoadNextMap()
-	-- Just in case.
-	timer.Simple(10, game.LoadNextMap)
-	timer.Simple(15, function() RunConsoleCommand("changelevel", game.GetMap()) end)
-
-	if file.Exists(GetConVar("mapcyclefile"):GetString(), "GAME") then
-		game.LoadNextMap()
-	else
-		local maps = file.Find("maps/zs_*.bsp", "GAME")
-		maps = table.Add(maps, file.Find("maps/ze_*.bsp", "GAME"))
-		maps = table.Add(maps, file.Find("maps/zm_*.bsp", "GAME"))
-		table.sort(maps)
-		if #maps > 0 then
-			local currentmap = game.GetMap()
-			for i, map in ipairs(maps) do
-				local lowermap = string.lower(map)
-				local realmap = RealMap(lowermap)
-				if realmap == currentmap then
-					if maps[i + 1] then
-						local nextmap = RealMap(maps[i + 1])
-						if nextmap then
-							RunConsoleCommand("changelevel", nextmap)
-						end
-					else
-						local nextmap = RealMap(maps[1])
-						if nextmap then
-							RunConsoleCommand("changelevel", nextmap)
-						end
-					end
-
-					break
-				end
-			end
-		end
-	end
-end
-
 function GM:PreRestartRound()
 	for _, pl in pairs(player.GetAll()) do
 		pl:StripWeapons()
@@ -1712,11 +1681,10 @@ function GM:EndRound(winner)
 		hook.Add("SetupPlayerVisibility", "EndRoundSetupPlayerVisibility", EndRoundSetupPlayerVisibility)
 	end
 
-	if self:ShouldRestartRound() then
+	local shouldRestartRound = self:ShouldRestartRound()
+	if shouldRestartRound then
 		timer.Simple(self.EndGameTime - 3, function() gamemode.Call("PreRestartRound") end)
 		timer.Simple(self.EndGameTime, function() gamemode.Call("RestartRound") end)
-	else
-		timer.Simple(self.EndGameTime, function() gamemode.Call("LoadNextMap") end)
 	end
 
 	-- Get rid of some lag.
@@ -1752,6 +1720,10 @@ function GM:EndRound(winner)
 		net.WriteUInt(winner or -1, 8)
 		net.WriteString(game.GetMapNext())
 	net.Broadcast()
+
+	if not shouldRestartRound then
+		self.MapVote:Start(self.EndGameTime)
+	end
 
 	GAMEMODE.StatTracking:IncreaseElementKV(STATTRACK_TYPE_ROUND,
 		winner == TEAM_HUMAN and "Wins" or ("LossWave"..self:GetWave()), game.GetMap(), 1)
@@ -2059,6 +2031,10 @@ function GM:PlayerInitialSpawnRound(pl)
 		pl:SetFrags(self.StoredUndeadFrags[uniqueid])
 		self.StoredUndeadFrags[uniqueid] = nil
 	end
+
+	-- If a player joins mid-mapvote, we still want to give them a chance to
+	-- participate.
+	self.MapVote:NetworkToPlayer(pl)
 end
 
 function GM:GetDynamicSpawning()
@@ -2096,6 +2072,7 @@ function GM:PlayerDisconnected(pl)
 	self:SaveVault(pl)
 
 	gamemode.Call("CalculateInfliction")
+	self.MapVote:RemoveVote(pl)
 end
 
 function GM:CanDamageNail(ent, attacker, inflictor, damage, dmginfo)
