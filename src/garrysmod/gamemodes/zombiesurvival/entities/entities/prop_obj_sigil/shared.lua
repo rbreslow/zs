@@ -54,3 +54,8 @@ function ENT:CanBeDamagedByTeam(teamid)
 
 	return teamid == TEAM_UNDEAD
 end
+
+-- Disable human collisions on sigil
+function ENT:ShouldNotCollide(ent)
+	return ent:IsPlayer() and ent:Team() == TEAM_HUMAN
+end
