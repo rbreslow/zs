@@ -139,7 +139,7 @@ function SWEP:SecondaryAttack()
 	end
 
 	for _, nail in pairs(ents.FindByClass("prop_nail")) do
-		if nail:GetParent() == trent and nail:GetActualPos():DistToSqr(tr.HitPos) <= 81 then
+		if nail:GetParent() == trent and nail:GetActualPos():DistToSqr(tr.HitPos) <= 8 then
 			owner:PrintTranslatedMessage(HUD_PRINTCENTER, "too_close_to_another_nail")
 			return
 		end
