@@ -95,7 +95,7 @@ function SWEP:Reload()
 end
 
 function SWEP:CanPrimaryAttack()
-	if self:GetOwner():IsHolding() or self:GetOwner():GetBarricadeGhosting() then return false end
+	if self:GetOwner():IsHolding() or self:IsOwnerBarricadeGhosting() then return false end
 
 	return self:GetNextPrimaryFire() <= CurTime() and not self:IsSwinging()
 end
@@ -427,4 +427,8 @@ function SWEP:TranslateActivity( act )
 	end
 
 	return self.ActivityTranslate and self.ActivityTranslate[act] or -1
+end
+
+function SWEP:IsOwnerBarricadeGhosting()
+	return self:GetOwner():GetBarricadeGhosting()
 end
