@@ -57,3 +57,8 @@ end
 function SWEP:PlayRepairSound(hitent)
 	hitent:EmitSound("npc/dog/dog_servo"..math.random(7, 8)..".wav", 70, math.random(100, 105))
 end
+
+-- Disable behavior that happens when ghosting on meleebase
+function SWEP:IsOwnerBarricadeGhosting()
+	return false
+end
