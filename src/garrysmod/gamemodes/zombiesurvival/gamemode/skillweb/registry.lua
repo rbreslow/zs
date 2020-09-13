@@ -181,7 +181,6 @@ SKILL_CRITICALKNUCKLE = 60
 SKILL_KNUCKLEMASTER = 61
 SKILL_D_LATEBUYER = 63
 SKILL_VITALITY1 = 66
-SKILL_TAUT = 69
 SKILL_INSIGHT = 74
 SKILL_GLUTTON = 75
 SKILL_D_WEAKNESS = 81
@@ -493,7 +492,7 @@ GM:AddSkill(SKILL_HANDY1, "Handy I", GOOD.."+4% repair rate",
 GM:AddSkill(SKILL_HANDY2, "Handy II", GOOD.."+5% repair rate",
 																-5,			-4,					{SKILL_HANDY3, SKILL_U_BLASTTURRET, SKILL_LOADEDHULL}, TREE_BUILDINGTREE)
 GM:AddSkill(SKILL_HANDY3, "Handy III", GOOD.."+6% repair rate",
-																-5,			-1,					{SKILL_TAUT, SKILL_HAMMERDISCIPLINE, SKILL_D_NOODLEARMS, SKILL_HANDY4}, TREE_BUILDINGTREE)
+																-5,			-1,					{SKILL_HAMMERDISCIPLINE, SKILL_D_NOODLEARMS, SKILL_HANDY4}, TREE_BUILDINGTREE)
 GM:AddSkill(SKILL_HANDY4, "Handy IV", GOOD.."+7% repair rate",
 																-3,			1,					{SKILL_HANDY5}, TREE_BUILDINGTREE)
 GM:AddSkill(SKILL_HANDY5, "Handy V", GOOD.."+8% repair rate",
@@ -556,8 +555,6 @@ GM:AddSkill(SKILL_D_LATEBUYER, "Debuff: Late Buyer", GOOD.."+20 starting Worth\n
 GM:AddSkill(SKILL_U_CRAFTINGPACK, "Unlock: Crafting Pack", GOOD.."Unlocks purchasing the Sawblade component\n"..GOOD.."Unlocks purchasing the Electrobattery component\n"..GOOD.."Unlocks purchasing the CPU Parts component",
 																4,			-1,					{}, TREE_BUILDINGTREE)
 .AlwaysActive = true
-GM:AddSkill(SKILL_TAUT, "Taut", GOOD.."Damage does not make you drop props\n"..BAD.."+40% prop carrying slow down",
-																-5,			3,					{}, TREE_BUILDINGTREE)
 GM:AddSkill(SKILL_D_NOODLEARMS, "Debuff: Noodle Arms", GOOD.."+5 starting Worth\n"..GOOD.."+1 starting scrap\n"..BAD.."Unable to pick up objects",
 																-7,			2,					{}, TREE_BUILDINGTREE)
 GM:AddSkill(SKILL_INSTRUMENTS, "Instruments", GOOD.."+5% turret range",
@@ -1127,10 +1124,6 @@ end)
 GM:AddSkillModifier(SKILL_D_LATEBUYER, SKILLMOD_WORTH, 20)
 GM:AddSkillModifier(SKILL_D_LATEBUYER, SKILLMOD_ARSENAL_DISCOUNT, -0.02)
 
-GM:AddSkillFunction(SKILL_TAUT, function(pl, active)
-	pl.BuffTaut = active
-end)
-
 GM:AddSkillModifier(SKILL_BLOODARMOR, SKILLMOD_HEALTH, -13)
 
 GM:AddSkillModifier(SKILL_HAEMOSTASIS, SKILLMOD_BLOODARMOR_DMG_REDUCTION, -0.25)
@@ -1249,8 +1242,6 @@ GM:AddSkillModifier(SKILL_INSTRUMENTS, SKILLMOD_TURRET_RANGE_MUL, 0.05)
 GM:AddSkillModifier(SKILL_LEVELHEADED, SKILLMOD_AIM_SHAKE_MUL, -0.05)
 
 GM:AddSkillModifier(SKILL_ROBUST, SKILLMOD_WEAPON_WEIGHT_SLOW_MUL, -0.06)
-
-GM:AddSkillModifier(SKILL_TAUT, SKILLMOD_PROP_CARRY_SLOW_MUL, 0.4)
 
 GM:AddSkillModifier(SKILL_TURRETOVERLOAD, SKILLMOD_TURRET_RANGE_MUL, -0.3)
 
