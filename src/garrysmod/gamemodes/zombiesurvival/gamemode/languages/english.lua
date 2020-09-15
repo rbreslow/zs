@@ -28,7 +28,7 @@ LANGUAGE.nail_removed_by							= "%s removed a nail belonging to %s."
 LANGUAGE.banned_for_life_warning					= "You have the Banned for Life skill active so you can't purchase anything!"
 LANGUAGE.late_buyer_warning							= "You have the Late Buyer skill active so you can't purchase anything until the second half!"
 LANGUAGE.late_buyer_finished						= "The late buyer period has finished. You can now purchase items from the arsenal."
-LANGUAGE.need_to_be_near_arsenal_crate				= "You need to be near an Arsenal Crate to purchase items!"
+LANGUAGE.need_to_be_near_arsenal_crate				= "You need to be near a Sigil to purchase items!"
 LANGUAGE.need_to_be_near_remantler					= "You need to be near a Remantler!"
 LANGUAGE.cant_purchase_right_now					= "You can't purchase anything right now."
 LANGUAGE.dont_have_enough_points					= "You don't have enough points."
@@ -506,7 +506,7 @@ To deploy the turret, position it in a way so that the ghost is green. It must b
 <li>Use bigger props for barricades. The nails take less damage and the prop has room for more nails. In addition to that, it even acts as cover from projectiles.</li>
 </ul></p>]]
 LANGUAGE.help_cont_upgrades							= [[<p>Points are obtained through killing zombies, healing team mates, and building defenses.
-You can then exchange points in the Points Shop at Arsenal Crates.</p>
+You can then exchange points in the Points Shop at Sigils or Arsenal Crates.</p>
 
 <p>Tips for this section:
 <ul>

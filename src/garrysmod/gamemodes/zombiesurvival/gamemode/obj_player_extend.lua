@@ -230,13 +230,20 @@ function meta:MeleeViewPunch(damage)
 end
 
 function meta:NearArsenalCrate()
+	-- Always near an arsenal crate in objective maps
+	if GAMEMODE.ObjectiveMap then
+		return true
+	end
+
 	local pos = self:EyePos()
 
 	if self.ArsenalZone and self.ArsenalZone:IsValid() then return true end
 
 	local arseents = {}
+	table.Add(arseents, ents.FindByClass("prop_obj_sigil"))
 	table.Add(arseents, ents.FindByClass("prop_arsenalcrate"))
 	table.Add(arseents, ents.FindByClass("status_arsenalpack"))
+
 
 	for _, ent in pairs(arseents) do
 		local nearest = ent:NearestPoint(pos)
