@@ -46,6 +46,8 @@ AddCSLuaFile("skillweb/sh_skillweb.lua")
 AddCSLuaFile("skillweb/cl_skillweb.lua")
 AddCSLuaFile("skillweb/registry.lua")
 
+AddCSLuaFile("howl/cl_howl.lua")
+
 AddCSLuaFile("obj_vector_extend.lua")
 AddCSLuaFile("obj_entity_extend.lua")
 AddCSLuaFile("obj_entity_extend_cl.lua")
@@ -118,6 +120,7 @@ include_library("statistics")
 
 include("sv_database.lua")
 include("sv_mapvote.lua")
+include("howl/sv_howl.lua")
 
 include("sv_resources.lua")
 
@@ -1914,7 +1917,15 @@ function GM:PlayerInitialSpawn(pl)
 	pl.m_LastWaveStartSpawn = 0
 	pl.m_LastGasHeal = 0
 
+	-- Because we disable the PlayerAuthSpawn check with Howl, we're going to
+	-- reimplement here.
+	if not pl:IsBot() and not pl:IsFullyAuthenticated() then
+        pl:Kick("Your identity was not confirmed by the Steam network.")
+        return
+	end
+
 	self:InitializeVault(pl)
+	pl:restore_player()
 
 	gamemode.Call("PlayerInitialSpawnRound", pl)
 

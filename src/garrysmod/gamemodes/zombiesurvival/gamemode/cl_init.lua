@@ -25,6 +25,8 @@ include("cl_mapvote.lua")
 include("cl_net.lua")
 include("skillweb/cl_skillweb.lua")
 
+include("howl/cl_howl.lua")
+
 include("vgui/dteamcounter.lua")
 include("vgui/dmodelpanelex.lua")
 include("vgui/dammocounter.lua")
