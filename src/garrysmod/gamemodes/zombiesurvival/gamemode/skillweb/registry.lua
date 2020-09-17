@@ -104,7 +104,6 @@ SKILL_SPEED2 = 2
 SKILL_SPEED3 = 3
 SKILL_SPEED4 = 4
 SKILL_SPEED5 = 5
-SKILL_BACKPEDDLER = 18
 SKILL_LOADEDHULL = 20
 SKILL_REINFORCEDHULL = 21
 SKILL_REINFORCEDBLADES = 22
@@ -409,7 +408,7 @@ GM:AddSkill(SKILL_SPEED3, "Speed III", GOOD.."+3 movement speed\n"..BAD.."-4 max
 GM:AddSkill(SKILL_SPEED4, "Speed IV", GOOD.."+4.5 movement speed\n"..BAD.."-6 maximum health",
 																-4,			0,					{SKILL_SPEED5, SKILL_SAFEFALL}, TREE_SPEEDTREE)
 GM:AddSkill(SKILL_SPEED5, "Speed V", GOOD.."+5.25 movement speed\n"..BAD.."-7 maximum health",
-																-4,			-2,					{SKILL_ULTRANIMBLE, SKILL_BACKPEDDLER, SKILL_MOTIONI, SKILL_CARDIOTONIC, SKILL_UNBOUND}, TREE_SPEEDTREE)
+																-4,			-2,					{SKILL_ULTRANIMBLE, SKILL_MOTIONI, SKILL_CARDIOTONIC, SKILL_UNBOUND}, TREE_SPEEDTREE)
 GM:AddSkill(SKILL_AGILEI, "Agile I", GOOD.."+4% jumping power\n"..BAD.."-2 movement speed",
 																4,			6,					{SKILL_NONE, SKILL_AGILEII}, TREE_SPEEDTREE)
 GM:AddSkill(SKILL_AGILEII, "Agile II", GOOD.."+5% jumping power\n"..BAD.."-3 movement speed",
@@ -424,8 +423,6 @@ GM:AddSkill(SKILL_MOTIONII, "Motion II", GOOD.."+0.75 movement speed",
 																-1,			-1,					{SKILL_MOTIONIII}, TREE_SPEEDTREE)
 GM:AddSkill(SKILL_MOTIONIII, "Motion III", GOOD.."+0.75 movement speed",
 																0,			-2,					{SKILL_D_SLOW}, TREE_SPEEDTREE)
-GM:AddSkill(SKILL_BACKPEDDLER, "Backpeddler", GOOD.."Move the same speed in all directions\n"..BAD.."-7 movement speed\n"..BAD.."Receive leg damage on any melee hit",
-																-6,			0,					{}, TREE_SPEEDTREE)
 GM:AddSkill(SKILL_PHASER, "Phaser", GOOD.."+15% barricade phasing movement speed\n"..BAD.."+15% sigil teleportation time",
 																-1,			4,					{SKILL_D_WIDELOAD, SKILL_DRIFT}, TREE_SPEEDTREE)
 GM:AddSkill(SKILL_DRIFT, "Drift", GOOD.."+5% barricade phasing movement speed",
@@ -1094,11 +1091,6 @@ GM:AddSkillModifier(SKILL_BARRICADEEXPERT, SKILLMOD_HAMMER_SWING_DELAY_MUL, 0.3)
 GM:AddSkillModifier(SKILL_SAFEFALL, SKILLMOD_FALLDAMAGE_DAMAGE_MUL, -0.4)
 GM:AddSkillModifier(SKILL_SAFEFALL, SKILLMOD_FALLDAMAGE_RECOVERY_MUL, -0.5)
 GM:AddSkillModifier(SKILL_SAFEFALL, SKILLMOD_FALLDAMAGE_SLOWDOWN_MUL, 0.4)
-
-GM:AddSkillModifier(SKILL_BACKPEDDLER, SKILLMOD_SPEED, -7)
-GM:AddSkillFunction(SKILL_BACKPEDDLER, function(pl, active)
-	pl.NoBWSpeedPenalty = active
-end)
 
 GM:AddSkillModifier(SKILL_D_CLUMSY, SKILLMOD_WORTH, 20)
 GM:AddSkillModifier(SKILL_D_CLUMSY, SKILLMOD_POINTS, 5)

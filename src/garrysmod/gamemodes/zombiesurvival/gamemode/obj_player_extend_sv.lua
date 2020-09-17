@@ -182,10 +182,6 @@ function meta:ProcessDamage(dmginfo)
 				if self.MeleeDamageTakenMul and not dmgbypass then
 					dmginfo:SetDamage(dmginfo:GetDamage() * self.MeleeDamageTakenMul)
 				end
-
-				if self:IsSkillActive(SKILL_BACKPEDDLER) then
-					self:AddLegDamage(8)
-				end
 			end
 
 			if self.HasHemophilia and (damage >= 4 and dmgtype == 0 or bit.band(dmgtype, DMG_TAKE_BLEED) ~= 0) then
