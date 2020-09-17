@@ -16,7 +16,7 @@ cvars.AddChangeCallback("zs_filmgrainopacity", function(cvar, oldvalue, newvalue
 	GAMEMODE.FilmGrainOpacity = math.Clamp(tonumber(newvalue) or 0, 0, 255)
 end)
 
-GM.ColorModEnabled = CreateClientConVar("zs_colormod", "1", true, false):GetBool()
+GM.ColorModEnabled = CreateClientConVar("zs_colormod", "0", true, false):GetBool()
 cvars.AddChangeCallback("zs_colormod", function(cvar, oldvalue, newvalue)
 	GAMEMODE.ColorModEnabled = tonumber(newvalue) == 1
 end)
