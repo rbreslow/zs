@@ -10,6 +10,7 @@ CLASS.BetterVersion = "Fast Zombie"
 CLASS.SWEP = "weapon_zs_agiledead"
 
 CLASS.Unlocked = true
+CLASS.Hidden = true
 
 CLASS.Health = 125
 CLASS.Points = CLASS.Health/GM.NoHeadboxZombiePointRatio
