@@ -13,6 +13,7 @@ CLASS.Unlocked = true
 CLASS.Health = 220
 CLASS.Speed = 180
 CLASS.Revives = false
+CLASS.Model = Model("models/player/zombie_classic_hbfix.mdl")
 
 CLASS.Points = CLASS.Health/GM.HumanoidZombiePointRatio
 

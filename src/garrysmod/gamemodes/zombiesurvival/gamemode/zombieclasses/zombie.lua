@@ -20,7 +20,7 @@ CLASS.Points = CLASS.Health/GM.HumanoidZombiePointRatio
 
 CLASS.SWEP = "weapon_zs_zombie"
 
-CLASS.Model = Model("models/player/zombie_classic_hbfix.mdl")
+CLASS.UsePlayerModel = true
 
 CLASS.PainSounds = {"npc/zombie/zombie_pain1.wav", "npc/zombie/zombie_pain2.wav", "npc/zombie/zombie_pain3.wav", "npc/zombie/zombie_pain4.wav", "npc/zombie/zombie_pain5.wav", "npc/zombie/zombie_pain6.wav"}
 CLASS.DeathSounds = {"npc/zombie/zombie_die1.wav", "npc/zombie/zombie_die2.wav", "npc/zombie/zombie_die3.wav"}
@@ -151,7 +151,7 @@ function CLASS:CalcMainActivity(pl, velocity)
 		return ACT_HL2MP_WALK_CROUCH_ZOMBIE_01 - 1 + math_ceil((CurTime() / 4 + pl:EntIndex()) % 3), -1
 	end
 
-	return ACT_HL2MP_WALK_ZOMBIE_01 - 1 + math_ceil((CurTime() / 3 + pl:EntIndex()) % 3), -1
+	return ACT_HL2MP_RUN_ZOMBIE, -1
 end
 
 function CLASS:UpdateAnimation(pl, velocity, maxseqgroundspeed)
@@ -282,5 +282,13 @@ if SERVER then
 end
 
 if CLIENT then
-	CLASS.Icon = "zombiesurvival/killicons/zombie"
+	CLASS.Icon = "zombiesurvival/killicons/fresh_dead"
+
+	function CLASS:PrePlayerDraw(pl)
+		render.SetColorModulation(0.5, 0.9, 0.5)
+	end
+
+	function CLASS:PostPlayerDraw(pl)
+		render.SetColorModulation(1, 1, 1)
+	end
 end
