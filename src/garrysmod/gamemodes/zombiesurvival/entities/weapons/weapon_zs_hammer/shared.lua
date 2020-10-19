@@ -41,8 +41,6 @@ SWEP.NoGlassWeapons = true
 
 SWEP.AllowQualityWeapons = true
 
-SWEP.DoorDamageMultiplier = 10
-
 GAMEMODE:SetPrimaryWeaponModifier(SWEP, WEAPON_MODIFIER_FIRE_DELAY, -0.04)
 GAMEMODE:AttachWeaponModifier(SWEP, WEAPON_MODIFIER_MELEE_RANGE, 3, 1)
 
@@ -63,56 +61,4 @@ end
 -- Disable behavior that happens when ghosting on meleebase
 function SWEP:IsOwnerBarricadeGhosting()
 	return false
-end
-
--- Reloading at a door will attack it for vast damage
-function SWEP:ReloadAttack(target)
-	if not self:CanPrimaryAttack() then return end
-	self:SetNextAttack()
-	
-	local owner = self:GetOwner()
-
-	self:DoMeleeAttackAnim()
-
-	if not target.Hit then
-		if self.MissAnim then
-			self:SendWeaponAnim(self.MissAnim)
-		end
-		self.IdleAnimation = CurTime() + self:SequenceDuration()
-		self:PlaySwingSound()
-
-		if owner.MeleePowerAttackMul and owner.MeleePowerAttackMul > 1 then
-			self:SetPowerCombo(0)
-		end
-
-		if self.PostOnMeleeMiss then self:PostOnMeleeMiss(target) end
-
-		return
-	end
-
-	local hitent = target.Entity
-	
-	if self.HitAnim then
-		self:SendWeaponAnim(self.HitAnim)
-	end
-	self.IdleAnimation = CurTime() + self:SequenceDuration()
-
-	owner:EmitSound("weapons/melee/crowbar/crowbar_hit-"..math.random(4)..".ogg")
-	self:PlayHitSound()
-
-	if self.OnMeleeHit and self:OnMeleeHit(hitent, false, target) then
-		return
-	end
-
-	if SERVER then
-		self:ServerMeleeHitEntity(target, hitent, self.DoorDamageMultiplier)
-	end
-
-	self:MeleeHitEntity(target, hitent, self.DoorDamageMultiplier)
-
-	if self.PostOnMeleeHit then self:PostOnMeleeHit(hitent, hitflesh, target) end
-
-	if SERVER then
-		self:ServerMeleePostHitEntity(target, hitent, self.DoorDamageMultiplier)
-	end
 end

@@ -7,18 +7,7 @@ function SWEP:Reload()
 
 	local tr = owner:CompensatedMeleeTrace(self.MeleeRange, self.MeleeSize)
 	local trent = tr.Entity
-
-	if not trent:IsValid() then
-		return
-	end
-
-	-- Unbroken doors receive high damage attack on reload
-	if trent:GetClass() == "prop_door_rotating" then
-		self:ReloadAttack(tr)
-		return
-	end
-
-	if not trent:IsNailed() then return end
+	if not trent:IsValid() or not trent:IsNailed() then return end
 
 	local ent
 	local dist
