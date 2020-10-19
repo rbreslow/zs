@@ -196,6 +196,11 @@ function SWEP:MeleeSwing()
 	local hitent = tr.Entity
 	local hitflesh = tr.MatType == MAT_FLESH or tr.MatType == MAT_BLOODYFLESH or tr.MatType == MAT_ANTLION or tr.MatType == MAT_ALIENFLESH
 
+	-- Doors should be easier to break.
+	if hitent:GetClass() == "prop_door_rotating" then
+			damagemultiplier = damagemultiplier * 10
+	end
+
 	if self.HitAnim then
 		self:SendWeaponAnim(self.HitAnim)
 	end
