@@ -1,5 +1,0 @@
-unlitgeneric
-{
-	$multiply 1
-	$basetexture "models\weapons\v_models\tablet\tablet_grid_border"
-}

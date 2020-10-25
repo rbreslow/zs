@@ -1,6 +1,0 @@
-unlitgeneric
-{
-	$additive 1
-	$basetexture "models\weapons\v_models\tablet\tag\tag"
-	$frame 0
-}

@@ -1,5 +1,0 @@
-unlitgeneric
-{
-	"$basetexture"         "models/weapons/v_models/tablet/tablet_scan_map"
-	"$translucent"            "1"
-}
