@@ -51,16 +51,3 @@ services:
     - server
     volumes:
       - ./src/lapis:/usr/local/src
-
-  awscli:
-    image: amazon/aws-cli:latest
-    environment:
-      - AWS_ACCESS_KEY_ID
-      - AWS_SECRET_ACCESS_KEY
-      - AWS_ENDPOINT_URL
-      - ZS_FASTDL_BUCKET
-      - ZS_MAPS_BUCKET
-    volumes:
-      - ./:/usr/local/src
-    working_dir: /usr/local/src
-    entrypoint: bash

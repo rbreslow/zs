@@ -60,7 +60,9 @@ if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
     docker-compose build --pull
 
     # Pull map files from from S3
-    docker-compose run --rm --no-deps awscli \
+    docker-compose \
+      -f docker-compose.ci.yml \
+      run --rm --no-deps terraform \
       ./scripts/sync-maps
 
     resource_file=./src/garrysmod/gamemodes/zombiesurvival/gamemode/sv_resources.lua
@@ -84,7 +86,9 @@ if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
       "${resource_file}"
 
     # Push FastDL artifacts to S3
-    docker-compose run --rm --no-deps awscli \
+    docker-compose \
+      -f docker-compose.ci.yml \
+      run --rm --no-deps terraform \
       ./scripts/sync-fastdl
 
     # Bring up PostgreSQL and Lapis in a way that respects

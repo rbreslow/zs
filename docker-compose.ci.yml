@@ -1,0 +1,16 @@
+version: "3.8"
+services:
+  terraform:
+    image: quay.io/azavea/terraform:0.13.5
+    volumes:
+      - ./:/usr/local/src
+      - $HOME/.aws:/root/.aws:ro
+    environment:
+      - AWS_PROFILE=${AWS_PROFILE:-zs}
+      - GIT_COMMIT=${GIT_COMMIT:-latest}
+      - ZS_DEBUG=1
+      - ZS_SETTINGS_BUCKET=${ZS_SETTINGS_BUCKET:-zombiesurvival-staging-config-us-east-1}
+      - ZS_FASTDL_BUCKET
+      - ZS_MAPS_BUCKET
+    working_dir: /usr/local/src
+    entrypoint: bash

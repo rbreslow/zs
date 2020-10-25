@@ -85,11 +85,12 @@ serve as the FastDL endpoint.
 
 ## Scripts
 
-| Name          | Description                                        |
-|---------------|----------------------------------------------------|
-| `console`     | Attach to the SRCDS console. Detach with `ctrl-d`. |
-| `manage`      | Run a Lapis command line tool.                     |
-| `server`      | Start SRCDS.                                       |
-| `sync-fastdl` | Push FastDL artifacts to S3.                       |
-| `sync-maps`   | Pull map files from from S3.                       |
-| `update`      | Build container images and update dependencies.    |
+| Name          | Description                                                 |
+|---------------|-------------------------------------------------------------|
+| `console`     | Attach to the SRCDS console. Detach with `ctrl-d`.          |
+| `infra`       | Execute Terraform subcommands with remote state management. |
+| `manage`      | Run a Lapis command line tool.                              |
+| `server`      | Start SRCDS.                                                |
+| `sync-fastdl` | Push FastDL artifacts to S3.                                |
+| `sync-maps`   | Pull map files from from S3.                                |
+| `update`      | Build container images and update dependencies.             |

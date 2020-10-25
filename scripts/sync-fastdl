@@ -16,9 +16,7 @@ if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
     usage
   else
     if [[ -n "${ZS_FASTDL_BUCKET}" ]]; then
-      aws \
-        --endpoint-url "${AWS_ENDPOINT_URL}" \
-        s3 sync \
+      aws s3 sync \
         --acl public-read \
         --exclude "*.sha512256" \
         --size-only \

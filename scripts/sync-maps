@@ -16,9 +16,7 @@ if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
     usage
   else
     if [[ -n "${ZS_MAPS_BUCKET}" ]]; then
-      aws \
-        --endpoint-url "${AWS_ENDPOINT_URL}" \
-        s3 sync \
+      aws s3 sync \
         --size-only \
         --delete \
         "s3://${ZS_MAPS_BUCKET}" "./src/garrysmod/gamemodes/zombiesurvival/content/maps"
