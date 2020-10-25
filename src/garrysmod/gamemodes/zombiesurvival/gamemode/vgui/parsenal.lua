@@ -110,62 +110,105 @@ local function ItemPanelPaint(self, w, h)
 	return true
 end
 
-function GM:ViewerStatBarUpdate(viewer, display, sweptable)
-	local done, statshow = {}
-	local speedtotext = GAMEMODE.SpeedToText
+function GM:ViewerStatBarUpdate(viewer, hide_stat_bar, t)
+	local done, stat_show = {}
+
+	local base = t.Base
+	local stats = GAMEMODE.WeaponStatBarVals[base]
+
+	local is_swcs = weapons.IsBasedOn(t.ClassName, "weapon_swcs_base")
+	local ItemAttributes = is_swcs and util.KeyValuesToTable(t.ItemDefAttributes, true, false)
+
 	for i = 1, 6 do
-		if display then
+		if not stats or hide_stat_bar then
 			viewer.ItemStats[i]:SetText("")
 			viewer.ItemStatValues[i]:SetText("")
 			viewer.ItemStatBars[i]:SetVisible(false)
 			continue
 		end
-		local statshowbef = statshow
-		for k, stat in pairs(GAMEMODE.WeaponStatBarVals) do
-			local statval = stat[6] and sweptable[stat[6]][stat[1]] or sweptable[stat[1]]
-			if not done[stat] and statval and statval ~= -1 then
-				statshow = stat
-				done[stat] = true
 
+		local stat_show_bef = stat_show
+		for _, stat_bar_val in pairs(stats) do
+			local parameter = stat_bar_val[1]
+			local attack_type = stat_bar_val[6]
+
+			local value
+			if is_swcs then
+				value = tonumber(ItemAttributes[parameter])
+			else
+				value = attack_type and t[attack_type][parameter] or t[parameter]
+			end
+
+			if not done[stat_bar_val] then
+				stat_show = stat_bar_val
+				done[stat_bar_val] = true
 				break
 			end
 		end
-		if statshowbef and statshowbef[1] == statshow[1] then
+
+		local parameter = stat_show[1]
+		local name = stat_show[2]
+		local attack_type = stat_show[6]
+
+		if stat_show_bef and stat_show_bef[2] == name then
 			viewer.ItemStats[i]:SetText("")
 			viewer.ItemStatValues[i]:SetText("")
 			viewer.ItemStatBars[i]:SetVisible(false)
 			continue
 		end
 
-		local statnum, stattext = statshow[6] and sweptable[statshow[6]][statshow[1]] or sweptable[statshow[1]]
-		if statshow[1] == "Damage" and sweptable.Primary.NumShots and sweptable.Primary.NumShots > 1 then
-			stattext = statnum .. " x " .. sweptable.Primary.NumShots-- .. " (" .. (statnum * sweptable.Primary.NumShots) .. ")"
-		elseif statshow[1] == "WalkSpeed" then
-			stattext = speedtotext[SPEED_NORMAL]
-			if speedtotext[sweptable[statshow[1]]] then
-				stattext = speedtotext[sweptable[statshow[1]]]
-			elseif sweptable[statshow[1]] < SPEED_SLOWEST then
-				stattext = speedtotext[-1]
-			end
-		elseif statshow[1] == "ClipSize" then
-			stattext = statnum / sweptable.RequiredClip
+		local value
+		if is_swcs then
+			value = tonumber(ItemAttributes[parameter])
 		else
-			stattext = statnum
+			value = attack_type and t[attack_type][parameter] or t[parameter]
 		end
 
-		viewer.ItemStats[i]:SetText(statshow[2])
-		viewer.ItemStatValues[i]:SetText(stattext)
+		local text = value
+	
+		if is_swcs then
+			local isAlt = tobool(ItemAttributes["zoom levels"]) and " alt" or ""
 
-		if statshow[1] == "Damage" then
-			statnum = statnum * sweptable.Primary.NumShots
-		elseif statshow[1] == "ClipSize" then
-			statnum = statnum / sweptable.RequiredClip
+			if name == "Magazine" then
+				value = 0
+			elseif name == "Damage" then
+				local bullets = tonumber(ItemAttributes["bullets"])
+
+				if bullets and bullets > 1 then
+					text = string.format("%d x %d", value, bullets)
+				end
+			elseif name == "Rate of Fire" then
+				local fCycleTime = tonumber(ItemAttributes["cycletime"]) or .15
+
+				value = 60 / fCycleTime
+				text = string.format("%d RPM", value)
+			elseif name == "Recoil Control" then
+				local flRecoilMagnitude = tonumber(ItemAttributes["recoil magnitude"])
+				local flRecoilMagnitudeVariance = tonumber(ItemAttributes["recoil magnitude variance"])
+
+				value = math.ceil(math.max(0, 100 - (flRecoilMagnitude + flRecoilMagnitudeVariance)))
+				text = string.format("%d%%", value)
+			elseif name == "Accurate Range" then
+				local fInaccuracy = tonumber(ItemAttributes["inaccuracy stand" .. isAlt]) * 0.001
+				local fSpread = tonumber(ItemAttributes["spread"]) * 0.001
+
+				-- 12 inch dinner plate
+				local kAccurateRadius = 0.5 * 12
+				local fFinalInaccuracy = fInaccuracy + fSpread
+				local flEffectiveRange = kAccurateRadius / fFinalInaccuracy
+
+				value = math.ceil(flEffectiveRange * 0.0254)
+				text = string.format("%d m", value)
+			end
 		end
 
-		viewer.ItemStatBars[i].Stat = statnum
-		viewer.ItemStatBars[i].StatMin = statshow[3]
-		viewer.ItemStatBars[i].StatMax = statshow[4]
-		viewer.ItemStatBars[i].BadHigh = statshow[5]
+		viewer.ItemStats[i]:SetText(name)
+		viewer.ItemStatValues[i]:SetText(text)
+
+		viewer.ItemStatBars[i].Stat = value
+		viewer.ItemStatBars[i].StatMin = stat_show[3]
+		viewer.ItemStatBars[i].StatMax = stat_show[4]
+		viewer.ItemStatBars[i].BadHigh = stat_show[5]
 		viewer.ItemStatBars[i]:SetVisible(true)
 	end
 end
