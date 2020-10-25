@@ -26,6 +26,8 @@ resource "aws_instance" "srcds" {
   subnet_id                   = aws_default_subnet.default[0].id
   associate_public_ip_address = true
 
+  iam_instance_profile = "SRCDSInstanceProfile"
+
   tags = {
     Name        = "SRCDS",
     Project     = var.project,

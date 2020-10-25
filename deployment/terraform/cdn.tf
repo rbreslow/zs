@@ -8,6 +8,7 @@ resource "aws_cloudfront_distribution" "cdn" {
   is_ipv6_enabled = true
   http_version    = "http2"
   comment         = "${var.project} (${var.environment})"
+  default_root_object = "index.html"
 
   price_class = var.cloudfront_price_class
   aliases     = ["data.${var.r53_public_hosted_zone}"]
