@@ -4,6 +4,10 @@ SWEP.DrawCrosshair = false
 SWEP.ViewModelFOV = 70
 SWEP.ViewModelFlip = false
 
+function SWEP:CustomAmmoDisplay()
+	return {Draw = false}
+end
+
 function SWEP:DrawHUD()
 	local wid, hei = 384, 16
 	local x, y = ScrW() - wid - 64, ScrH() - hei - 72

@@ -19,12 +19,6 @@ function fastdl() {
   declare -a prefixes
   prefixes=(maps materials models particles resource sound)
 
-  # Wipe existing resource file
-  if [[ $resource_file ]]; then
-    mkdir -p "${resource_file%/*}"
-    >"${resource_file}"
-  fi
-
   for prefix in "${prefixes[@]}"; do
     find "${input_dir}" -maxdepth 1 -type d -name "${prefix}" | while read dir; do
       find "${dir}" -type f ! -name "*.bz2" -a ! -name ".DS_Store" | while read file; do
@@ -69,11 +63,25 @@ if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
     docker-compose run --rm --no-deps awscli \
       ./scripts/sync-maps
 
+    resource_file=./src/garrysmod/gamemodes/zombiesurvival/gamemode/sv_resources.lua
+
+    # Wipe existing resource file
+    if [[ $resource_file ]]; then
+      mkdir -p "${resource_file%/*}"
+      >"${resource_file}"
+    fi
+
+    # Compress SWCS content
+    fastdl \
+      ./src/garrysmod/addons/source-weps \
+      ./build/fastdl \
+      "${resource_file}"
+
     # Compress gamemode content
     fastdl \
       ./src/garrysmod/gamemodes/zombiesurvival/content \
       ./build/fastdl \
-      ./src/garrysmod/gamemodes/zombiesurvival/gamemode/sv_resources.lua
+      "${resource_file}"
 
     # Push FastDL artifacts to S3
     docker-compose run --rm --no-deps awscli \

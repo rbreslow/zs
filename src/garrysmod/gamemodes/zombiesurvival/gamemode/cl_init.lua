@@ -52,6 +52,7 @@ include("vgui/premantle.lua")
 include("vgui/dpingmeter.lua")
 include("vgui/dsidemenu.lua")
 include("vgui/dspawnmenu.lua")
+include("vgui/zsammoarea.lua")
 include("vgui/zsgamestate.lua")
 include("vgui/zshealtharea.lua")
 include("vgui/zsstatusarea.lua")
@@ -285,7 +286,6 @@ function GM:InitPostEntity()
 	self:CreateLateVGUI()
 
 	self:AssignItemProperties()
-	self:FixWeaponBase()
 
 	self:LocalPlayerFound()
 
@@ -394,14 +394,6 @@ function GM:GetFogData()
 	self.FogRed = _fogr
 	self.FogGreen = _fogg
 	self.FogBlue = _fogb
-end
-
-function GM:ShouldDraw3DWeaponHUD()
-	return GAMEMODE.WeaponHUDMode ~= 1
-end
-
-function GM:ShouldDraw2DWeaponHUD()
-	return GAMEMODE.WeaponHUDMode >= 1 or self:UseOverTheShoulder()
 end
 
 local matAura = Material("models/debug/debugwhite")
@@ -1353,12 +1345,33 @@ function GM:CreateScalingFonts()
 
 	surface.CreateLegacyFont("csd", screenscale * 42, 100, true, false, "zsdeathnoticecs", false, false)
 	surface.CreateLegacyFont("HL2MP", screenscale * 42, 100, true, false, "zsdeathnotice", false, false)
+	surface.CreateFont("zsdeathnoticecsgo", {
+		font      = "csgo_equipment",
+		extended  = true,
+		size      = screenscale * 32,
+		antialias = true,
+		weight    = 400
+	})
 
 	surface.CreateLegacyFont("csd", screenscale * 96, 100, true, false, "zsdeathnoticecsws", false, false)
 	surface.CreateLegacyFont("HL2MP", screenscale * 96, 100, true, false, "zsdeathnoticews", false, false)
+	surface.CreateFont("zsdeathnoticecsgows", {
+		font      = "csgo_equipment",
+		extended  = true,
+		size      = screenscale * 72,
+		antialias = true,
+		weight    = 400
+	})
 
 	surface.CreateLegacyFont("csd", screenscale * 72, 100, true, false, "zsdeathnoticecspa", false, false)
 	surface.CreateLegacyFont("HL2MP", screenscale * 72, 100, true, false, "zsdeathnoticepa", false, false)
+	surface.CreateFont("zsdeathnoticecsgopa", {
+		font      = "csgo_equipment",
+		extended  = true,
+		size      = screenscale * 54,
+		antialias = true,
+		weight    = 400
+	})
 
 	surface.CreateLegacyFont(fontfamily, screenscale * (16 + fontsizeadd), fontweight, fontaa, false, "ZSHUDFontTiny", fontshadow, fontoutline)
 	surface.CreateLegacyFont(fontfamily, screenscale * (20 + fontsizeadd), fontweight, fontaa, false, "ZSHUDFontSmallest", fontshadow, fontoutline)
@@ -1431,6 +1444,10 @@ function GM:EvaluateFilmMode()
 		self.HealthHUD:SetVisible(visible)
 	end
 
+	if self.AmmoHUD and self.AmmoHUD:IsValid() then
+		self.AmmoHUD:SetVisible(visible)
+	end
+
 	if self.StatusHUD and self.StatusHUD:IsValid() then
 		self.StatusHUD:SetVisible(visible)
 	end
@@ -1469,6 +1486,10 @@ end
 function GM:CreateLateVGUI()
 	if not self.HealthHUD then
 		self.HealthHUD = vgui.Create("ZSHealthArea")
+	end
+
+	if not self.AmmoHUD then
+		self.AmmoHUD = vgui.Create("ZSAmmoArea")
 	end
 
 	if not self.StatusHUD then
@@ -1902,27 +1923,10 @@ end
 function GM:HUDPaintEndRound()
 end
 
-function GM:PreDrawViewModel(vm, pl, wep)
+function GM:PreDrawViewModel(vm, pl, weapon)
 	if pl and pl:IsValid() and (pl:IsHolding() or GAMEMODE.HideViewModels) then return true end
 
-	if wep and wep:IsValid() and wep.PreDrawViewModel then
-		return wep:PreDrawViewModel(vm)
-	end
-end
-
-function GM:PostDrawViewModel(vm, pl, wep)
-	if wep and wep:IsValid() then
-		if wep.UseHands or not wep:IsScripted() then
-			local hands = pl:GetHands()
-			if hands and hands:IsValid() then
-				hands:DrawModel()
-			end
-		end
-
-		if wep.PostDrawViewModel then
-			wep:PostDrawViewModel(vm)
-		end
-	end
+    self.BaseClass.PreDrawViewModel(self, vm, pl, weapon)  
 end
 
 local undo = false

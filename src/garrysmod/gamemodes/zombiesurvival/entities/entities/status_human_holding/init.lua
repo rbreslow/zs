@@ -20,6 +20,7 @@ function ENT:Initialize()
 
 		local wep = owner:GetActiveWeapon()
 		if wep:IsValid() then
+			wep:Holster()
 			wep:SendWeaponAnim(ACT_VM_HOLSTER)
 			if wep.SetIronsights then
 				wep:SetIronsights(false)
@@ -121,7 +122,7 @@ function ENT:OnRemove()
 		if owner:Alive() and owner:Team() == TEAM_HUMAN then
 			local wep = owner:GetActiveWeapon()
 			if wep:IsValid() then
-				wep:SendWeaponAnim(ACT_VM_DRAW)
+				wep:Deploy()
 			end
 		end
 	end

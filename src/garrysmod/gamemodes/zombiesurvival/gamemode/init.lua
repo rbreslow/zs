@@ -84,6 +84,7 @@ AddCSLuaFile("vgui/premantle.lua")
 AddCSLuaFile("vgui/zshealtharea.lua")
 AddCSLuaFile("vgui/zsstatusarea.lua")
 AddCSLuaFile("vgui/zsgamestate.lua")
+AddCSLuaFile("vgui/zsammoarea.lua")
 
 AddCSLuaFile("vgui/grid.lua")
 AddCSLuaFile("vgui/mapvote.lua")
@@ -285,7 +286,6 @@ function GM:AddNetworkStrings()
 	util.AddNetworkString("zs_healother")
 	util.AddNetworkString("zs_healby")
 	util.AddNetworkString("zs_buffby")
-	util.AddNetworkString("zs_buffwith")
 	util.AddNetworkString("zs_repairobject")
 	util.AddNetworkString("zs_worldhint")
 	util.AddNetworkString("zs_honmention")
@@ -497,7 +497,6 @@ function GM:InitPostEntity()
 	self.DidInitPostEntity = true
 
 	self:AssignItemProperties()
-	self:FixWeaponBase()
 
 	gamemode.Call("InitPostEntityMap")
 
@@ -3825,7 +3824,7 @@ function GM:PlayerSpawn(pl)
 						pl:Give(class)
 					end
 				else
-					pl:Give("weapon_zs_redeemers")
+					pl:Give("weapon_swcs_elite")
 					pl:Give("weapon_zs_swissarmyknife")
 				end
 			end

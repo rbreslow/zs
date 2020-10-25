@@ -2,6 +2,10 @@ INC_CLIENT()
 
 SWEP.ViewModelFOV = 75
 
+function SWEP:CustomAmmoDisplay()
+	return {Draw = false}
+end
+
 function SWEP:DrawHUD()
 	if GetGlobalBool("classicmode") then return end
 

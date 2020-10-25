@@ -48,17 +48,16 @@ GM.AmmoToPurchaseNames = {
 }
 
 GM.WeaponStatBarVals = {
-	{"MeleeDamage", "Damage", 2, 140, false},
-	{"MeleeRange", "Range", 30, 100, false},
-	{"MeleeSize", "Size", 0.2, 3, false},
-
-	{"Damage", "Damage", 1, 105, false, "Primary"},
-	{"Delay", "Attack Delay", 0.05, 2, true, "Primary"},
-	{"ClipSize", "Clip Size", 1, 35, false, "Primary"},
-
-	{"ConeMin", "Min Spread", 0, 5, true},
-	{"ConeMax", "Max Spread", 1.5, 7, true},
-	{"WalkSpeed", "Move Speed", 200, 250, false}
+	["weapon_zs_basemelee"] = {
+		{"MeleeDamage", "Damage", 2, 140, false}
+	},
+	["weapon_swcs_base"] = {
+		{"primary clip size", "Magazine", 5, 150, false},
+		{"damage", "Damage", 20, 115, false},
+		{"cycletime", "Rate of Fire", 40, 857, false},
+		{"recoil magnitude", "Recoil Control", 0, 100, false},
+		{"range", "Accurate Range", 3, 70, false}
+	}
 }
 
 GM.LifeStatsLifeTime = 5
@@ -177,6 +176,7 @@ cvars.AddChangeCallback("zs_interfacesize", function(cvar, oldvalue, newvalue)
 	local screenscale = BetterScreenScale()
 
 	GAMEMODE.HealthHUD:InvalidateLayout()
+	GAMEMODE.AmmoHUD:InvalidateLayout()
 
 	GAMEMODE.GameStatePanel:InvalidateLayout()
 	GAMEMODE.GameStatePanel:SetSize(screenscale * 420, screenscale * 80)
@@ -237,11 +237,6 @@ end)
 GM.MessageBeaconShow = CreateClientConVar("zs_messagebeaconshow", "1", true, false):GetBool()
 cvars.AddChangeCallback("zs_messagebeaconshow", function(cvar, oldvalue, newvalue)
 	GAMEMODE.MessageBeaconShow = tonumber(newvalue) == 1
-end)
-
-GM.WeaponHUDMode = CreateClientConVar("zs_weaponhudmode", "0", true, false):GetInt()
-cvars.AddChangeCallback("zs_weaponhudmode", function(cvar, oldvalue, newvalue)
-	GAMEMODE.WeaponHUDMode = tonumber(newvalue) or 0
 end)
 
 GM.HealthTargetDisplay = CreateClientConVar("zs_healthtargetdisplay", "0", true, false):GetInt()

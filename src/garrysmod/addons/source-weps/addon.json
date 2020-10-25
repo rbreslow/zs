@@ -1,0 +1,14 @@
+{
+    "description": "A pack of weapon ports from HL2, and CS:GO.",
+    "ignore": [
+        ".git*",
+        "README.md",
+        "LICENSE"
+    ],
+    "tags": [
+        "fun",
+        "scenic"
+    ],
+    "title": "Source Weapon Pack",
+    "type": "weapon"
+}

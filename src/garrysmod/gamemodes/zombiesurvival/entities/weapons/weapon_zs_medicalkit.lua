@@ -185,6 +185,10 @@ function SWEP:DrawWeaponSelection(x, y, w, h, alpha)
 	self:BaseDrawWeaponSelection(x, y, w, h, alpha)
 end
 
+function SWEP:CustomAmmoDisplay()
+	return {Draw = false}
+end
+
 local texGradDown = surface.GetTextureID("VGUI/gradient_down")
 function SWEP:DrawHUD()
 	local wid, hei = 384, 16

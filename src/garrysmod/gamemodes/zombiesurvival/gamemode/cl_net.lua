@@ -435,15 +435,6 @@ net.Receive("zs_buffby", function(length)
 	GAMEMODE:CenterNotify({killicon = "weapon_zs_medicgun"}, " ", COLOR_GREEN, translate.Format("buffed_x_with_y", ent:Name(), buff))
 end)
 
-net.Receive("zs_buffwith", function(length)
-	local ent = net.ReadEntity()
-	local buff = net.ReadString()
-
-	if not ent:IsValidPlayer() then return end
-
-	GAMEMODE:CenterNotify({killicon = "weapon_zs_medicgun"}, " ", COLOR_GREEN, translate.Format("buffed_x_with_a_y", ent:Name(), buff))
-end)
-
 net.Receive("zs_nailremoved", function(length)
 	local ent = net.ReadEntity()
 	if not ent:IsValidPlayer() then return end

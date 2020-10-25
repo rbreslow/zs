@@ -23,7 +23,7 @@ function ENT:OnRemove()
 			if wep.NoHolsterOnCarry then
 				self.NoHolster = true
 			else
-				wep:SendWeaponAnim(ACT_VM_DRAW)
+				wep:Deploy()
 			end
 		end
 	end
@@ -48,6 +48,7 @@ function ENT:Initialize()
 		if owner == MySelf then
 			local wep = owner:GetActiveWeapon()
 			if wep:IsValid() then
+				wep:Holster()
 				wep:SendWeaponAnim(ACT_VM_HOLSTER)
 			end
 		end
