@@ -82,10 +82,51 @@ local function RandDoClick(self)
 	end
 end
 
-GM.SavedCarts = {}
+GM.SavedCarts = {
+	{
+		"Barricader",
+		{
+			"8nails",
+			"12nails",
+			"crphmr",
+			"blueprintsi",
+			"portablehole"
+		}
+	},
+	{
+		"Medic",
+		{
+			"60mkit",
+			"90mkit",
+			"medkit"
+		}
+	},
+	{
+		"Meleer",
+		{
+			"zpaxe",
+			"kevlar",
+			"momentumsupsysii",
+			"vitpackagei",
+			"stone"
+		}
+	},
+	{
+		"Shooter with Resupply Box",
+		{
+			"2pcp",
+			"3pcp",
+			"glock",
+			"resupplybox"
+		}
+	}
+}
+
 hook.Add("Initialize", "LoadCarts", function()
 	if file.Exists(GAMEMODE.CartFile, "DATA") then
 		GAMEMODE.SavedCarts = Deserialize(file.Read(GAMEMODE.CartFile)) or {}
+	else
+		file.Write(GAMEMODE.CartFile, Serialize(GAMEMODE.SavedCarts))
 	end
 end)
 
