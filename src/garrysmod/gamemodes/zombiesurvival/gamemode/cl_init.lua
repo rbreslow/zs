@@ -50,6 +50,7 @@ include("vgui/premantle.lua")
 include("vgui/dpingmeter.lua")
 include("vgui/dsidemenu.lua")
 include("vgui/dspawnmenu.lua")
+include("vgui/zsammoarea.lua")
 include("vgui/zsgamestate.lua")
 include("vgui/zshealtharea.lua")
 include("vgui/zsstatusarea.lua")
@@ -391,14 +392,6 @@ function GM:GetFogData()
 	self.FogRed = _fogr
 	self.FogGreen = _fogg
 	self.FogBlue = _fogb
-end
-
-function GM:ShouldDraw3DWeaponHUD()
-	return GAMEMODE.WeaponHUDMode ~= 1
-end
-
-function GM:ShouldDraw2DWeaponHUD()
-	return GAMEMODE.WeaponHUDMode >= 1 or self:UseOverTheShoulder()
 end
 
 local matAura = Material("models/debug/debugwhite")
@@ -1449,6 +1442,10 @@ function GM:EvaluateFilmMode()
 		self.HealthHUD:SetVisible(visible)
 	end
 
+	if self.AmmoHUD and self.AmmoHUD:IsValid() then
+		self.AmmoHUD:SetVisible(visible)
+	end
+
 	if self.StatusHUD and self.StatusHUD:IsValid() then
 		self.StatusHUD:SetVisible(visible)
 	end
@@ -1487,6 +1484,10 @@ end
 function GM:CreateLateVGUI()
 	if not self.HealthHUD then
 		self.HealthHUD = vgui.Create("ZSHealthArea")
+	end
+
+	if not self.AmmoHUD then
+		self.AmmoHUD = vgui.Create("ZSAmmoArea")
 	end
 
 	if not self.StatusHUD then

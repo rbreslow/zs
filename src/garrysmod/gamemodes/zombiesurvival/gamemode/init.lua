@@ -82,6 +82,7 @@ AddCSLuaFile("vgui/premantle.lua")
 AddCSLuaFile("vgui/zshealtharea.lua")
 AddCSLuaFile("vgui/zsstatusarea.lua")
 AddCSLuaFile("vgui/zsgamestate.lua")
+AddCSLuaFile("vgui/zsammoarea.lua")
 
 AddCSLuaFile("vgui/grid.lua")
 AddCSLuaFile("vgui/mapvote.lua")

@@ -176,6 +176,7 @@ cvars.AddChangeCallback("zs_interfacesize", function(cvar, oldvalue, newvalue)
 	local screenscale = BetterScreenScale()
 
 	GAMEMODE.HealthHUD:InvalidateLayout()
+	GAMEMODE.AmmoHUD:InvalidateLayout()
 
 	GAMEMODE.GameStatePanel:InvalidateLayout()
 	GAMEMODE.GameStatePanel:SetSize(screenscale * 420, screenscale * 80)
@@ -236,11 +237,6 @@ end)
 GM.MessageBeaconShow = CreateClientConVar("zs_messagebeaconshow", "1", true, false):GetBool()
 cvars.AddChangeCallback("zs_messagebeaconshow", function(cvar, oldvalue, newvalue)
 	GAMEMODE.MessageBeaconShow = tonumber(newvalue) == 1
-end)
-
-GM.WeaponHUDMode = CreateClientConVar("zs_weaponhudmode", "0", true, false):GetInt()
-cvars.AddChangeCallback("zs_weaponhudmode", function(cvar, oldvalue, newvalue)
-	GAMEMODE.WeaponHUDMode = tonumber(newvalue) or 0
 end)
 
 GM.HealthTargetDisplay = CreateClientConVar("zs_healthtargetdisplay", "0", true, false):GetInt()

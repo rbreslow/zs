@@ -95,9 +95,3 @@ function SWEP:RenderScene(origin, angles, fov)
 
 	FROM_CAMERA = nil
 end
-
-function SWEP:Draw3DHUD(vm, pos, ang)
-end
-
-function SWEP:Draw2DHUD()
-end
