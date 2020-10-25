@@ -712,3 +712,38 @@ GM.EndWavePointsBonus = 5
 
 -- Also give humans this many points when the wave ends, multiplied by (wave - 1)
 GM.EndWavePointsBonusPerWave = 1
+
+local function BootstrapSWCS()
+	for _, t in ipairs(weapons.GetList()) do
+		if weapons.IsBasedOn(t.ClassName, "weapon_swcs_base")  then
+			t.PrimaryAttack = function(self)
+				if self:GetOwner():IsHolding() or self:GetOwner():GetBarricadeGhosting() then 
+					return false 
+				end
+
+				return self.BaseClass.PrimaryAttack(self)
+			end
+
+			local ItemVisuals = util.KeyValuesToTable(t.ItemDefVisuals, true, false)
+			local ItemAttributes = util.KeyValuesToTable(t.ItemDefAttributes, true, false)
+			local weapon_type = string.lower(ItemVisuals.weapon_type or "")
+			
+			t.Slot = 2
+
+			if weapon_type == "pistol" then
+				t.Slot = 1
+				t.Primary.Ammo = "pistol"
+			elseif weapon_type == "rifle" then
+				t.Primary.Ammo = "ar2"
+			elseif weapon_type == "shotgun" then
+				t.Primary.Ammo = "buckshot"
+			elseif weapon_type == "sniperrifle" then
+				t.Slot = 3
+				t.Primary.Ammo = "357"
+			else
+				t.Primary.Ammo = "smg1"
+			end
+		end
+	end
+end
+hook.Add("InitPostEntity", "BootstrapSWCS", BootstrapSWCS)
