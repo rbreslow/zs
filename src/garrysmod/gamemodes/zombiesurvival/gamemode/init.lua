@@ -494,7 +494,6 @@ function GM:InitPostEntity()
 	self.DidInitPostEntity = true
 
 	self:AssignItemProperties()
-	self:FixWeaponBase()
 
 	gamemode.Call("InitPostEntityMap")
 

@@ -16,7 +16,7 @@ local CSSWEAPONS = {"weapon_knife","weapon_glock","weapon_usp","weapon_p228","we
 	"weapon_famas","weapon_m4a1","weapon_aug","weapon_sg550","weapon_mac10",
 	"weapon_tmp","weapon_mp5navy","weapon_ump45","weapon_p90","weapon_m249"}
 
-function GM:Move(pl, move)
+function GM:SetupMove(pl, move)
 	if pl:Team() == TEAM_HUMAN then
 		if pl:GetBarricadeGhosting() then
 			move:SetMaxSpeed(36)

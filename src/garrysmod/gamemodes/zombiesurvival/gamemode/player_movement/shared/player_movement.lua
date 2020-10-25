@@ -27,11 +27,8 @@ local M_GetMaxClientSpeed = M_CMoveData.GetMaxClientSpeed
 local M_GetForwardSpeed = M_CMoveData.GetForwardSpeed
 local M_GetSideSpeed = M_CMoveData.GetSideSpeed
 
-function GM:SetupMove(pl, move, cmd)
-end
-
 local fw, sd, pt, vel, mul, phase
-function GM:Move(pl, move)
+function GM:SetupMove(pl, move)
 	pt = E_GetTable(pl)
 
 	if P_Team(pl) == TEAM_HUMAN then

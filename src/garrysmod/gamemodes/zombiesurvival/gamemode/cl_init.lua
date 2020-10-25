@@ -283,7 +283,6 @@ function GM:InitPostEntity()
 	self:CreateLateVGUI()
 
 	self:AssignItemProperties()
-	self:FixWeaponBase()
 
 	self:LocalPlayerFound()
 
@@ -1900,27 +1899,10 @@ end
 function GM:HUDPaintEndRound()
 end
 
-function GM:PreDrawViewModel(vm, pl, wep)
+function GM:PreDrawViewModel(vm, pl, weapon)
 	if pl and pl:IsValid() and (pl:IsHolding() or GAMEMODE.HideViewModels) then return true end
 
-	if wep and wep:IsValid() and wep.PreDrawViewModel then
-		return wep:PreDrawViewModel(vm)
-	end
-end
-
-function GM:PostDrawViewModel(vm, pl, wep)
-	if wep and wep:IsValid() then
-		if wep.UseHands or not wep:IsScripted() then
-			local hands = pl:GetHands()
-			if hands and hands:IsValid() then
-				hands:DrawModel()
-			end
-		end
-
-		if wep.PostDrawViewModel then
-			wep:PostDrawViewModel(vm)
-		end
-	end
+    self.BaseClass.PreDrawViewModel(self, vm, pl, weapon)  
 end
 
 local undo = false
