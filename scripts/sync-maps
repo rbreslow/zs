@@ -18,7 +18,6 @@ if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
     if [[ -n "${ZS_MAPS_BUCKET}" ]]; then
       aws s3 sync \
         --size-only \
-        --delete \
         "s3://${ZS_MAPS_BUCKET}" "./src/garrysmod/gamemodes/zombiesurvival/content/maps"
     else
       echo "ERROR: No ZS_MAPS_BUCKET variable defined."
