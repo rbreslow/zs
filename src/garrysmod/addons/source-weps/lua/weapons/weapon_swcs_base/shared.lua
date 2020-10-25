@@ -1874,11 +1874,15 @@ function SWEP:SecondaryAttack()
         self:SetNextSecondaryFire(nextAttackTime)
     elseif self:GetHasBurstMode() then
         if self:GetBurstMode() then
-            owner:PrintMessage(HUD_PRINTCENTER, "auto")
+            if SERVER then
+                owner:CenterNotify("Switched to automatic firing mode")
+            end
             self:SetBurstMode(false)
             self:SetWeaponMode(Primary_Mode)
         else
-            owner:PrintMessage(HUD_PRINTCENTER, "burst")
+            if SERVER then
+                owner:CenterNotify("Switched to burst firing mode")
+            end
             self:SetBurstMode(true)
             self:SetWeaponMode(Secondary_Mode)
         end
