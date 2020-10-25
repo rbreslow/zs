@@ -38,6 +38,35 @@ if not killicon.GetFont then
 	end
 end
 
+killicon.AddFont("weapon_swcs_glock", "zsdeathnoticecsgo", utf8.char(59775))
+killicon.AddFont("weapon_swcs_usp_silencer_off", "zsdeathnoticecsgo", utf8.char(59775))
+killicon.AddFont("weapon_swcs_usp_silencer", "zsdeathnoticecsgo", utf8.char(59776))
+killicon.AddFont("weapon_swcs_p250", "zsdeathnoticecsgo", utf8.char(59750))
+killicon.AddFont("weapon_swcs_elite", "zsdeathnoticecsgo", utf8.char(59677))
+killicon.AddFont("weapon_swcs_cz75", "zsdeathnoticecsgo", utf8.char(59669))
+killicon.AddFont("weapon_swcs_revolver", "zsdeathnoticecsgo", utf8.char(59756))
+killicon.AddFont("weapon_swcs_deagle", "zsdeathnoticecsgo", utf8.char(59670))
+
+killicon.AddFont("weapon_swcs_mac10", "zsdeathnoticecsgo", utf8.char(59740))
+killicon.AddFont("weapon_swcs_nova", "zsdeathnoticecsgo", utf8.char(59748))
+killicon.AddFont("weapon_swcs_mag7", "zsdeathnoticecsgo", utf8.char(59741))
+killicon.AddFont("weapon_swcs_mp5sd", "zsdeathnoticecsgo", utf8.char(59744))
+killicon.AddFont("weapon_swcs_bizon", "zsdeathnoticecsgo", utf8.char(59658))
+killicon.AddFont("weapon_swcs_ssg08", "zsdeathnoticecsgo", utf8.char(59764))
+
+killicon.AddFont("weapon_swcs_xm1014", "zsdeathnoticecsgo", utf8.char(59777))
+killicon.AddFont("weapon_swcs_famas", "zsdeathnoticecsgo", utf8.char(59678))
+killicon.AddFont("weapon_swcs_p90", "zsdeathnoticecsgo", utf8.char(59749))
+killicon.AddFont("weapon_swcs_ak47", "zsdeathnoticecsgo", utf8.char(59648))
+
+killicon.AddFont("weapon_swcs_m4a1_silencer", "zsdeathnoticecsgo", utf8.char(59737))
+killicon.AddFont("weapon_swcs_m4a1_silencer_off", "zsdeathnoticecsgo", utf8.char(59736))
+killicon.AddFont("weapon_swcs_aug", "zsdeathnoticecsgo", utf8.char(59654))
+
+killicon.AddFont("weapon_swcs_awp", "zsdeathnoticecsgo", utf8.char(59655))
+killicon.AddFont("weapon_swcs_scar20", "zsdeathnoticecsgo", utf8.char(59758))
+killicon.AddFont("weapon_swcs_m249", "zsdeathnoticecsgo", utf8.char(59739))
+
 killicon.AddFont("default", "zsdeathnoticecs", "C")
 killicon.AddFont("suicide", "zsdeathnoticecs", "C")
 killicon.AddFont("player", "zsdeathnoticecs", "C")

@@ -1350,12 +1350,33 @@ function GM:CreateScalingFonts()
 
 	surface.CreateLegacyFont("csd", screenscale * 42, 100, true, false, "zsdeathnoticecs", false, false)
 	surface.CreateLegacyFont("HL2MP", screenscale * 42, 100, true, false, "zsdeathnotice", false, false)
+	surface.CreateFont("zsdeathnoticecsgo", {
+		font      = "csgo_equipment",
+		extended  = true,
+		size      = screenscale * 32,
+		antialias = true,
+		weight    = 400
+	})
 
 	surface.CreateLegacyFont("csd", screenscale * 96, 100, true, false, "zsdeathnoticecsws", false, false)
 	surface.CreateLegacyFont("HL2MP", screenscale * 96, 100, true, false, "zsdeathnoticews", false, false)
+	surface.CreateFont("zsdeathnoticecsgows", {
+		font      = "csgo_equipment",
+		extended  = true,
+		size      = screenscale * 72,
+		antialias = true,
+		weight    = 400
+	})
 
 	surface.CreateLegacyFont("csd", screenscale * 72, 100, true, false, "zsdeathnoticecspa", false, false)
 	surface.CreateLegacyFont("HL2MP", screenscale * 72, 100, true, false, "zsdeathnoticepa", false, false)
+	surface.CreateFont("zsdeathnoticecsgopa", {
+		font      = "csgo_equipment",
+		extended  = true,
+		size      = screenscale * 54,
+		antialias = true,
+		weight    = 400
+	})
 
 	surface.CreateLegacyFont(fontfamily, screenscale * (16 + fontsizeadd), fontweight, fontaa, false, "ZSHUDFontTiny", fontshadow, fontoutline)
 	surface.CreateLegacyFont(fontfamily, screenscale * (20 + fontsizeadd), fontweight, fontaa, false, "ZSHUDFontSmallest", fontshadow, fontoutline)
