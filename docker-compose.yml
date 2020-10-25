@@ -20,6 +20,7 @@ services:
     volumes:
       - ./src/garrysmod/cfg/server.cfg:/var/lib/steam/.steam/SteamApps/common/GarrysModDS/garrysmod/cfg/server.cfg:ro
       - ./src/garrysmod/gamemodes/zombiesurvival:/var/lib/steam/.steam/SteamApps/common/GarrysModDS/garrysmod/gamemodes/zombiesurvival:ro
+      - ./src/garrysmod/addons/source-weps:/var/lib/steam/.steam/SteamApps/common/GarrysModDS/garrysmod/addons/source-weps:ro
     depends_on:
       database:
         condition: service_healthy
